@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>三国杀 · 单机版</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/card.css">
+<link rel="stylesheet" href="css/anim.css">
+<link rel="stylesheet" href="css/readability.css">
+<link rel="stylesheet" href="css/battlefield.css">
+</head>
+<body>
+
+<!-- ============ 开始界面 ============ -->
+<div id="startScreen" class="screen">
+  <div class="start-bg"></div>
+  <div class="start-inner">
+    <h1 class="game-title"><span>三</span><span>国</span><span>杀</span></h1>
+    <p class="subtitle">风 · 火 · 林 · 山 / 身份局</p>
+
+    <div class="start-panel">
+      <div class="opt-row">
+        <label>人数</label>
+        <div class="seg" id="optCount">
+          <button data-v="5" class="on">5人</button>
+          <button data-v="6">6人</button>
+          <button data-v="8">8人</button>
+        </div>
+      </div>
+      <div class="opt-row">
+        <label>难度</label>
+        <div class="seg" id="optDiff">
+          <button data-v="normal">普通</button>
+          <button data-v="hard" class="on">困难</button>
+          <button data-v="insane">疯狂</button>
+        </div>
+      </div>
+      <div class="opt-row">
+        <label>动画</label>
+        <div class="seg" id="optSpeed">
+          <button data-v="1.5">慢</button>
+          <button data-v="1" class="on">正常</button>
+          <button data-v="0.55">快</button>
+        </div>
+      </div>
+      <button id="btnStart" class="btn-primary">开 始 游 戏</button>
+      <button id="btnRules" class="btn-ghost">玩法说明</button>
+    </div>
+    <p class="credit">古风写实 · 57 位武将 · 单机身份对战</p>
+  </div>
+</div>
+
+<!-- ============ 选将界面 ============ -->
+<div id="pickScreen" class="screen hidden">
+  <div class="pick-head">
+    <div class="pick-identity">你的身份：<b id="pickIdentity">—</b></div>
+    <h2>请选择你的武将</h2>
+    <div class="pick-hint" id="pickHint"></div>
+  </div>
+  <div id="pickList" class="pick-list"></div>
+  <button id="btnPickConfirm" class="btn-primary" disabled>确 定</button>
+</div>
+
+<!-- ============ 游戏主界面 ============ -->
+<div id="gameScreen" class="screen hidden">
+  <div id="battleScenery" aria-hidden="true">
+    <div class="battle-haze haze-one"></div><div class="battle-haze haze-two"></div>
+    <div class="battle-fire fire-left"></div><div class="battle-fire fire-right"></div>
+    <div class="war-standard standard-left"><i></i><span>蜀</span></div>
+    <div class="war-standard standard-right"><i></i><span>魏</span></div>
+    <div id="battleEmbers"></div>
+  </div>
+  <div id="battleToolbar"><span id="actionStatus">等待出牌</span><label>对局速度 <select id="battleSpeed"><option value="1.5">慢速</option><option value="1" selected>标准</option><option value="0.55">快速</option></select></label></div>
+  <div id="table">
+    <div id="seatsArea"></div>
+    <div id="actionStage" aria-live="polite" aria-atomic="true"></div>
+
+    <div id="centerZone">
+      <div id="deckPile" class="pile">
+        <div class="card-back mini"><span id="deckCount">0</span></div>
+        <div class="pile-label">牌堆</div>
+      </div>
+      <div id="playZone"></div>
+      <div id="discardPile" class="pile">
+        <div class="discard-slot" id="discardSlot"></div>
+        <div class="pile-label">弃牌堆</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="logPanel">
+    <div class="log-head">战 报</div>
+    <div id="logBody"></div>
+  </div>
+
+  <!-- 自己 -->
+  <div id="selfArea">
+    <div id="selfGeneral"></div>
+    <div id="handDock">
+    <div id="controlPanel" class="hidden">
+      <div id="skillActions"></div>
+      <div id="promptText">—</div>
+      <div id="promptTimer"><i></i></div>
+      <div class="ctrl-btns">
+        <button id="btnOk"  class="btn-ok"  disabled>确定</button>
+        <button id="btnCancel" class="btn-cancel" disabled>取消</button>
+        <button id="btnEnd" class="btn-end" disabled>结束出牌</button>
+      </div>
+    </div>
+    <div id="handArea">
+      <div id="handCards"></div>
+    </div>
+    </div>
+  </div>
+
+  <div id="fxLayer"></div>
+  <div id="bannerLayer"></div>
+</div>
+
+<!-- ============ 通用弹窗 ============ -->
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- ============ 结算 ============ -->
+<div id="overScreen" class="screen hidden">
+  <div class="over-inner">
+    <h1 id="overTitle"></h1>
+    <p id="overDesc"></p>
+    <div id="overList" class="over-list"></div>
+    <button id="btnAgain" class="btn-primary">再来一局</button>
+  </div>
+</div>
+
+<script src="assets/manifest.js"></script>
+<script src="js/core/util.js"></script>
+<script src="js/data/cards.js"></script>
+<script src="js/data/generals.js"></script>
+<script src="js/ui/art.js"></script>
+<script src="js/ui/fx.js"></script>
+<script src="js/core/skills.js"></script>
+<script src="js/core/game.js?v=20260917-delay-window"></script>
+<script src="js/core/expansion.js"></script>
+<script src="js/ai/ai.js"></script>
+<script src="js/ui/ui.js"></script>
+<script src="js/ui/battle.js?v=20260917-delay-window"></script>
+<script src="js/ui/skill-info.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "sanguosha-offline",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/engine.test.cjs",
+    "test:browser": "node tests/browser.cjs",
+    "start": "node scripts/serve.cjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

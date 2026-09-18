@@ -1,0 +1,270 @@
+/* Atmospheric battlefield and a hand-centred command dock. */
+:root{--battle-log-width:280px;--dock-height:326px}
+#gameScreen{background:#171a1c}
+#gameScreen::before{display:none}
+#battleScenery{position:absolute;inset:44px 0 0;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,#111b2444,#13161b26 45%,#11100dc7),url('../assets/art/battlefield.png') center 45%/cover no-repeat}
+#battleScenery::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 48% 42%,transparent 30%,#080d1459 85%),linear-gradient(0deg,#0b1017ee,transparent 44%)}
+.battle-haze{position:absolute;width:80%;height:42%;left:-15%;top:25%;background:radial-gradient(ellipse,#bac1ba18,transparent 65%);filter:blur(20px);animation:smokeDrift 24s ease-in-out infinite alternate}
+.haze-two{left:30%;top:10%;width:85%;opacity:.65;animation-delay:-11s;animation-duration:32s}
+.battle-fire{position:absolute;bottom:23%;width:28%;height:38%;background:radial-gradient(ellipse at bottom,#ff7a193b,#ec4a0914 35%,transparent 70%);filter:blur(15px);animation:fireBreathe 3s ease-in-out infinite alternate}
+.fire-left{left:-10%}.fire-right{right:7%;animation-delay:-1.7s}
+.ember{position:absolute;bottom:5%;left:var(--x);width:var(--size);height:var(--size);border-radius:50%;background:#ffdca1;box-shadow:0 0 7px #ff7f23,0 0 15px #e64016;opacity:0;animation:emberRise var(--life) linear var(--delay) infinite}
+.war-standard{position:absolute;top:18%;width:72px;height:180px;opacity:.5;filter:drop-shadow(0 3px 9px #000);transform:rotate(-8deg)}
+.standard-left{left:3%}.standard-right{right:calc(var(--battle-log-width) + 2%);transform:rotate(7deg);top:22%}
+.war-standard i{position:absolute;left:0;top:-15px;bottom:-50px;width:4px;background:linear-gradient(90deg,#19191a,#a28e64,#2e251b)}
+.war-standard span{position:absolute;left:4px;top:0;display:grid;place-items:center;width:66px;height:108px;background:linear-gradient(100deg,#4c171a,#91322abf,#38181b);border-top:2px solid #b18e5f;border-bottom:2px solid #a47840;color:#e5c69c;font:36px KaiTi,serif;clip-path:polygon(0 0,100% 7%,92% 100%,52% 91%,0 100%);transform-origin:left center;animation:flagWave 3.5s ease-in-out infinite alternate}
+.standard-right span{background:linear-gradient(100deg,#1e303b,#365366,#162631);animation-delay:-2s}
+#battleToolbar{background:#111820ed;border-bottom-color:#b5975d70;box-shadow:0 5px 20px #0004}
+#table{right:var(--battle-log-width);bottom:var(--dock-height);z-index:2}
+#logPanel{right:0;width:var(--battle-log-width);top:44px;bottom:0;background:linear-gradient(180deg,#10161def,#11161bf0);border-left:1px solid #bd9d654d;z-index:3}
+.log-head{padding:14px;background:#1a2028a8}.log-turn{color:#d8b77a}
+#selfArea{right:var(--battle-log-width);height:var(--dock-height);padding:0 16px 12px;gap:20px;background:linear-gradient(0deg,#090e16ed, #101821b8 55%,transparent);z-index:5;align-items:flex-end}
+#selfGeneral{padding-bottom:4px;max-width:260px;flex-shrink:0}
+#handDock{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:5px}
+#controlPanel{flex:none;width:min(100%,900px);max-height:145px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 12px;align-items:center;padding:8px 12px;background:linear-gradient(120deg,#16212ced,#0c131dec);border:1px solid #bda26966;border-radius:10px;box-shadow:0 8px 26px #0006}
+#controlPanel{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 12px}
+#controlPanel #promptText{order:0;width:100%}#controlPanel .ctrl-btns{order:1;flex-shrink:0}#controlPanel #skillActions{order:2;justify-content:center;max-height:45px;flex-shrink:1}
+#selfGeneral .gcard{overflow:visible}#selfGeneral .gc-portrait,#selfGeneral .gc-shade{border-radius:8px;overflow:hidden}
+#promptText{grid-column:1/-1;font-size:15px;min-height:0;max-height:52px;overflow-y:auto;border:0;background:none;padding:0;line-height:1.5;text-align:center;color:#e4dcc8}
+#skillActions{grid-column:1;grid-row:2;max-height:65px;align-content:center;gap:5px}
+#skillActions:empty{display:none}.skill-action{font-size:14px;padding:7px 10px;background:linear-gradient(180deg,#51432b,#30291c);border-color:#c1a56580}
+.ctrl-btns{grid-column:2;grid-row:2;gap:8px;justify-content:center}.ctrl-btns button{flex:none;min-width:88px;padding:10px 15px;font-size:16px;border-radius:5px}.btn-end{min-width:110px!important}
+#promptTimer{display:none}
+#handArea{width:100%;height:198px;min-height:198px;flex:none;padding:10px 6px 0;align-items:flex-end;overflow-x:auto;overflow-y:hidden}
+#handCards{height:188px;min-width:100%;padding:0 4px 3px;align-items:flex-end}
+#handCards .card{margin-right:-22px}#handCards .card:hover,#handCards .card.sel{transform:translateY(-9px) scale(1.025)}
+#centerZone{position:absolute;left:0;right:0;top:auto;bottom:12px;transform:none;display:block;height:78px;pointer-events:none}
+#deckPile,#discardPile{position:absolute;bottom:0;transform:scale(.72);transform-origin:bottom center;opacity:.8}
+#deckPile{left:28%}#discardPile{right:28%}
+#playZone{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);max-width:80%;max-height:170px;min-height:0;min-width:0}
+#playZone:empty{display:none}
+.seat-box{box-shadow:0 8px 20px #000b,0 0 0 1px #c5b18a4d!important}.seat.turn .seat-box{box-shadow:0 0 0 2px #e6c075,0 0 22px #e6b65766!important}
+#actionStage{position:absolute;left:50%;top:57%;transform:translate(-50%,-50%);width:min(660px,72%);min-height:170px;pointer-events:none;z-index:20}
+.battle-action{--effect:#f1c777;position:relative;display:grid;grid-template-columns:92px minmax(0,1fr);gap:18px;align-items:center;padding:20px 25px;border:1px solid color-mix(in srgb,var(--effect),transparent 45%);border-radius:12px;background:linear-gradient(115deg,#0c1119e8,#16202aec 55%,#0e141bea);box-shadow:0 16px 55px #0009,0 0 35px color-mix(in srgb,var(--effect),transparent 87%);animation:actionArrive .38s cubic-bezier(.2,.9,.2,1);overflow:hidden;isolation:isolate}
+.battle-action::before,.battle-action::after{content:"";position:absolute;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--effect),transparent)}
+.battle-action::before{top:6px}.battle-action::after{bottom:6px}
+.battle-action.skill-only{grid-template-columns:72px 1fr}.battle-action.settled{opacity:.68;transition:opacity .8s}
+.action-card{position:relative;z-index:2;transform:rotate(-5deg);filter:drop-shadow(0 6px 12px #0009)}
+.action-card .card.mini{width:90px;height:132px;--badge-num:13px;--badge-suit:10.5px;--badge-w:19px}.action-card .cf-banner{font-size:17px!important}
+.action-copy{z-index:2;min-width:0}.action-eyebrow{font-size:13px;letter-spacing:.18em;color:var(--effect);margin-bottom:6px}.action-name{font:700 clamp(25px,3vw,39px)/1.2 KaiTi,serif;color:#fff1d3;text-shadow:0 2px 12px #000;margin-bottom:10px;letter-spacing:.08em}
+.action-source{font-size:17px;color:#eee4d2;line-height:1.7}.action-source strong{color:#ffe2a4}.action-targets{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;align-items:center;font-size:14px;color:#c5ccd1}
+.target-name{padding:3px 9px;border:1px solid color-mix(in srgb,var(--effect),transparent 48%);background:color-mix(in srgb,var(--effect) 13%,#101720);border-radius:4px;color:#fff1d8;font-size:16px}
+.skill-seal{position:relative;z-index:2;display:grid;place-items:center;width:65px;height:65px;border:2px solid var(--effect);transform:rotate(-9deg);font:34px KaiTi,serif;color:var(--effect);background:#72451940;border-radius:7px}
+.action-visual{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:.72}.action-visual i{position:absolute;display:block}
+.effect-slash{--effect:#ff8d64}.effect-dodge{--effect:#9fdcfa}.effect-heal{--effect:#9de4b4}.effect-wine{--effect:#ffc483}.effect-fire{--effect:#ff994f}.effect-thunder{--effect:#b9b1ff}.effect-arrows{--effect:#e9d3a1}.effect-invasion{--effect:#dc9476}.effect-chain{--effect:#a9cbe4}.effect-counter{--effect:#b4c2ff}.effect-dismantle{--effect:#e8ac80}.effect-steal{--effect:#89d3d4}.effect-draw{--effect:#ecd088}.effect-duel{--effect:#f89578}.effect-delay{--effect:#d7b0e9}.effect-equip{--effect:#d7c098}
+.effect-slash .action-visual i,.effect-duel .action-visual i{width:90%;height:5px;left:10%;top:45%;background:linear-gradient(90deg,transparent,#fff,var(--effect),transparent);box-shadow:0 0 20px var(--effect);transform:rotate(-28deg);animation:bladeSweep .65s ease-out both}
+.effect-duel .action-visual i:nth-child(2){transform:rotate(28deg);animation-delay:.18s}
+.effect-dodge .action-visual i,.effect-counter .action-visual i,.effect-heal .action-visual i,.effect-equip .action-visual i,.effect-delay .action-visual i{width:160px;height:160px;border:2px solid var(--effect);border-radius:50%;left:55%;top:10%;box-shadow:0 0 25px var(--effect);animation:effectRing 1.3s ease-out both}
+.action-visual i:nth-child(2){animation-delay:.18s!important}.action-visual i:nth-child(3){animation-delay:.35s!important}
+.effect-fire .action-visual i,.effect-wine .action-visual i{width:90px;height:200px;bottom:-75%;left:calc(28% + var(--i)*17%);background:radial-gradient(ellipse,#ffe6a4,#f9701999 35%,transparent 65%);filter:blur(4px);animation:flameBurst 1.4s ease-out both}
+.effect-thunder .action-visual i{left:calc(35% + var(--i)*20%);height:170%;width:24px;top:-30%;background:#eff1ff;clip-path:polygon(55% 0,15% 50%,50% 45%,15% 100%,95% 35%,57% 40%,100% 0);filter:drop-shadow(0 0 12px #9c96ff);animation:lightningStrike .7s ease-out both}
+.effect-arrows .action-visual i,.effect-invasion .action-visual i{height:3px;width:145px;background:linear-gradient(90deg,transparent,var(--effect),#fff);right:-150px;top:calc(15% + var(--i)*25%);transform:rotate(-27deg);animation:arrowVolley 1.1s ease-out both}
+.effect-chain .action-visual i{left:calc(28% + var(--i)*17%);top:35%;width:95px;height:48px;border:7px double var(--effect);border-radius:45%;transform:rotate(-24deg);animation:chainJoin .9s ease-out both}
+.effect-dismantle .action-visual i{left:65%;top:40%;width:50px;height:70px;background:#c58e5266;border:1px solid var(--effect);animation:shatterCard 1s ease-out both;--dx:calc((var(--i) - 1)*100px)}
+.effect-steal .action-visual i,.effect-draw .action-visual i{width:45px;height:62px;left:75%;top:30%;border:1px solid var(--effect);background:linear-gradient(120deg,#d6c28d44,#172537);border-radius:4px;animation:scrollFlight 1.2s ease-out both}
+.target-path{position:fixed;inset:0;width:100vw;height:100vh;overflow:visible;pointer-events:none;z-index:620}
+.target-path .path-shadow{stroke:#07101be0;stroke-width:12;fill:none}.target-path .path-core{stroke:var(--path-color);stroke-width:5;fill:none;filter:drop-shadow(0 0 6px var(--path-color));stroke-dasharray:16 8;animation:pathMarch .5s linear infinite}
+.target-path .path-head{fill:var(--path-color);filter:drop-shadow(0 0 8px var(--path-color))}
+.target-marker{position:fixed;pointer-events:none;border:3px solid var(--path-color);border-radius:12px;box-shadow:0 0 0 5px #0c142bbb,0 0 30px var(--path-color),inset 0 0 25px color-mix(in srgb,var(--path-color),transparent 65%);animation:targetLock .8s ease-in-out infinite alternate;z-index:621}
+.target-marker span{position:absolute;left:50%;bottom:-28px;transform:translateX(-50%);white-space:nowrap;background:#0a1422ed;border:1px solid var(--path-color);border-radius:5px;padding:3px 9px;font-size:15px;color:#fff5dc;box-shadow:0 4px 12px #0009}
+.source-marker{border-style:dashed;box-shadow:0 0 18px #f1d293;--path-color:#f1d293}
+@keyframes smokeDrift{to{transform:translate(22%, -10%) scale(1.12)}}
+@keyframes fireBreathe{to{opacity:.45;transform:scale(.88,1.12)}}
+@keyframes flagWave{0%{transform:perspective(300px) rotateY(-15deg) skewY(-3deg)}50%{transform:perspective(300px) rotateY(12deg) skewY(3deg)}100%{transform:perspective(300px) rotateY(-8deg) skewY(-1deg)}}
+@keyframes emberRise{10%{opacity:.8}80%{opacity:.35}100%{transform:translate(90px,-75vh) scale(.3);opacity:0}}
+@keyframes actionArrive{from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:none}}
+@keyframes bladeSweep{from{clip-path:inset(0 100% 0 0);opacity:1}60%{opacity:1}to{clip-path:inset(0);opacity:.2}}
+@keyframes effectRing{from{transform:scale(.2);opacity:1}to{transform:scale(1.7);opacity:0}}
+@keyframes flameBurst{25%{opacity:1}to{transform:translateY(-240px) scale(1.6);opacity:0}}
+@keyframes lightningStrike{0%,30%,60%{opacity:0}15%,45%{opacity:.9}100%{opacity:0}}
+@keyframes arrowVolley{to{transform:translate(-650px,240px) rotate(-27deg);opacity:0}}
+@keyframes chainJoin{from{transform:translateX(90px) rotate(-24deg);opacity:0}to{transform:translateX(0) rotate(-24deg);opacity:.35}}
+@keyframes shatterCard{to{transform:translate(var(--dx),60px) rotate(calc(var(--i)*40deg));opacity:0}}
+@keyframes scrollFlight{to{transform:translate(-270px,-40px) rotate(-25deg);opacity:0}}
+@keyframes pathMarch{to{stroke-dashoffset:-48}}
+@keyframes targetLock{to{filter:brightness(1.4);border-color:#fff3d4}}
+@media(max-width:1300px){:root{--battle-log-width:230px}#selfGeneral{max-width:215px}.ctrl-btns button{min-width:68px;padding:9px 10px}#selfArea{gap:12px}#controlPanel{padding:7px 9px}#actionStage{width:68%}.battle-action{padding:15px 18px;gap:12px}.action-source{font-size:15px}.action-name{font-size:30px}}
+@media(max-width:1050px){:root{--battle-log-width:0px}#logPanel{display:none}#actionStage{width:min(570px,70%)}#selfGeneral{max-width:210px}#battleToolbar{font-size:13px}}
+@media(max-height:780px){:root{--dock-height:295px;--card-w:112px;--card-h:164px}#handArea{height:178px;min-height:178px}#handCards{height:169px}#controlPanel{max-height:116px}#promptText{max-height:43px;font-size:14px}#skillActions{max-height:43px}.battle-action{padding:12px 18px;grid-template-columns:74px 1fr}.action-card .card.mini{width:72px;height:105px}.action-name{font-size:27px}#actionStage{top:60%;min-height:135px}.action-targets{margin-top:3px}}
+@media(prefers-reduced-motion:reduce){.battle-haze,.battle-fire,.ember,.war-standard span,.action-visual i,.target-path .path-core,.target-marker{animation:none!important}.ember{display:none}.battle-action{animation:none}.target-marker{box-shadow:0 0 14px var(--path-color)}}
+
+/* Sequential requests and private identity notes. */
+#responseQueue{position:absolute;left:50%;top:calc(57% + 123px);transform:translateX(-50%);z-index:24;width:min(700px,83%);padding:10px 16px;background:#0c1623f2;border:1px solid #9cd7f38c;border-radius:8px;pointer-events:none;box-shadow:0 5px 20px #0008}
+.response-heading{text-align:center;color:#d5f3ff;font-size:16px;margin-bottom:6px}.response-order{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;align-items:center}.response-direction{font-size:11px;color:#9aafbd;letter-spacing:.1em}.response-step{font-size:12px;color:#899bac;padding:3px 6px;border-radius:4px;border:1px solid #405366}.response-step.current{color:#082137;background:#b3e9ff;border-color:#effbff;box-shadow:0 0 12px #81d0ff70;font-weight:bold}.response-step.passed{opacity:.5}
+.seat.response-focus .seat-box,.gcard.response-focus{outline:3px solid #b6edff;outline-offset:4px;box-shadow:0 0 35px #73c7ff9c!important}
+.response-tag{position:absolute;left:50%;top:-28px;transform:translateX(-50%);white-space:nowrap;padding:4px 10px;border-radius:5px;background:#b8ebff;color:#092538;font-size:13px;font-weight:bold;z-index:8;box-shadow:0 3px 15px #0008;animation:responderPulse 1s ease-in-out infinite alternate}
+.identity-note{position:absolute;right:0;top:-22px;padding:3px 7px;font-size:11px;background:#0e1827e8;border:1px solid #b9a16d99;border-radius:4px;color:#e2d0a5;z-index:7;cursor:pointer;line-height:1.1}.gcard>.identity-note{top:-24px;right:0}.identity-note[data-identity="fan"]{color:#ffc2a5;border-color:#e38766}.identity-note[data-identity="zhong"]{color:#b7d9ff;border-color:#7aafef}.identity-note[data-identity="nei"]{color:#dfbaff;border-color:#be8aef}
+.response-focus>.identity-note{top:-51px}.identity-menu{position:fixed;z-index:950;background:#121d2af7;border:1px solid #bea36b;border-radius:9px;padding:10px;display:flex;flex-wrap:wrap;gap:6px;width:250px;box-shadow:0 12px 45px #000b}.identity-menu-title{width:100%;color:#d8c292;font-size:14px;padding:2px 2px 6px}.identity-menu button{padding:7px 10px;border:1px solid #627081;border-radius:4px;font-size:14px}.identity-menu button:hover{background:#57472b;border-color:#e3c281}
+.seat.targetable .seat-box{outline:2px solid #70ef9a;outline-offset:3px}.seat.chosen .seat-box{outline:3px solid #ffdf7c;outline-offset:3px}
+@keyframes responderPulse{to{filter:brightness(1.2)}}
+@media(max-height:780px){#responseQueue{top:calc(60% + 96px);padding:6px 10px}.response-heading{font-size:14px}.response-step{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.response-tag{animation:none}}
+
+.skill-inspect{position:absolute;left:0;top:-22px;z-index:7;color:#d9e9f9;background:#13202ded;border:1px solid #83a5bf9c;border-radius:4px;padding:3px 6px;font-size:11px;line-height:1.1}.gcard>.skill-inspect{top:-24px}.response-focus>.skill-inspect{top:-51px}.s-sk{cursor:help}
+#skillInspector{position:fixed;right:16px;top:64px;bottom:24px;width:min(390px,calc(100vw - 32px));z-index:960;display:flex;flex-direction:column;border:1px solid #c6ab75a8;border-radius:12px;background:linear-gradient(145deg,#192735fa,#0b121cfc);box-shadow:0 20px 80px #000b;color:#ece6d8;animation:inspectorIn .22s ease-out}
+.inspector-header{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;border-bottom:1px solid #bd9f664d}.inspector-header h2{font:28px KaiTi,serif;color:#f2d69e}.inspector-header p{font-size:13px;color:#aebac6;margin-top:6px}.inspector-close{font-size:30px;color:#d4bf98;padding:0 8px}
+.inspector-body{padding:5px 20px 20px;overflow-y:auto}.skill-description{padding:16px 0;border-bottom:1px solid #8f9fac26}.skill-description-head{display:flex;align-items:center;gap:10px}.skill-description h3,.skill-choice h3{font-size:19px;color:#f0ce88}.skill-type{font-size:11px;color:#abc8dc;border:1px solid #7091a660;border-radius:4px;padding:2px 5px}.skill-description p,.skill-choice p{font-size:15px;line-height:1.9;margin-top:8px;color:#e1e4e6;user-select:text}.skill-description small{display:block;color:#d0ab77;margin-top:9px}.equipment-heading{margin-top:18px;color:#9cc9df}
+.modal-body.skill-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(220px,1fr));max-width:800px;align-items:stretch;gap:12px}.skill-choice{background:#122130;border:1px solid #8eaaad55;border-radius:8px;padding:17px;display:flex;flex-direction:column;text-align:left}.skill-choice-meta{font-size:12px;color:#a4b5c5;margin-top:7px}.skill-choice p{flex:1}.skill-choice button{margin-top:14px;padding:10px 12px;border:1px solid #d2ad69;border-radius:5px;background:#6e542c;color:#fff0d0;font-size:14px}.skill-choice button:hover{background:#987442}
+#pickDetail.pick-skill-panel{width:min(920px,95vw);max-height:180px;overflow-y:auto;padding:14px 20px;border:1px solid #987f535e;border-radius:8px;background:#15212de3;font-size:15px!important;color:#d4dce3!important;line-height:1.9!important;text-align:left;margin:0!important;min-height:80px!important}
+#pickDetail.pick-skill-panel:empty::before{content:'点击任意武将，查看完整技能说明';color:#c7b792}.pick-list{max-height:49vh!important}.pick-list .gcard{transition:transform .2s,box-shadow .2s}.pick-list .gcard:hover{transform:translateY(-4px);box-shadow:0 0 20px #e5bb6155}.pick-list .gcard.sel{box-shadow:0 0 0 2px #e9c576,0 0 24px #e5bb6177}
+@keyframes inspectorIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:650px){.modal-body.skill-choice-grid{grid-template-columns:1fr}.ctrl-btns{grid-column:1/-1;grid-row:3}#controlPanel{grid-template-columns:1fr}#skillActions{justify-content:center}.skill-choice p{font-size:14px}}
+
+/* Readable portraits and unobstructed battlefield controls. */
+#controlPanel{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0 8px;max-height:180px;gap:8px;overflow:visible}
+#controlPanel #promptText{font-size:19px;line-height:1.5;max-height:58px;color:#fff1d4;text-shadow:0 2px 4px #000,0 0 10px #000;font-weight:500}
+#controlPanel .ctrl-btns{gap:14px}
+#controlPanel .ctrl-btns button{min-width:116px;min-height:54px;padding:10px 22px;font-size:23px;font-weight:700;letter-spacing:.08em;border:1px solid #d4b97c;border-radius:7px;color:#fff2cb;background:linear-gradient(#53452ef2,#30291ff2);box-shadow:0 3px 9px #0006;text-shadow:0 1px 2px #000}
+#controlPanel .ctrl-btns button:disabled{opacity:.5;color:#dfd5bd}
+#controlPanel .ctrl-btns button:not(:disabled):hover{background:linear-gradient(#94763d,#5d4827);border-color:#ffe4a1;transform:translateY(-2px)}
+#controlPanel #btnEnd{background:linear-gradient(#997431,#654a23)}
+#controlPanel #skillActions{max-height:64px;gap:8px}
+#controlPanel .skill-action{font-size:18px;padding:8px 13px;color:#fff1c7}
+#battleToolbar{font-size:19px}#logBody{font-size:18px;line-height:1.8}.log-turn,.log-head{font-size:18px}
+.seat{width:var(--seat-width,210px);transform:translateX(-50%)}
+.seat .seat-box{height:var(--seat-width,176px)}
+.seat .s-name{font-size:25px;left:9px;bottom:6px;text-shadow:0 2px 5px #000;
+  max-width:calc(100% - 58px);white-space:nowrap;overflow:hidden}
+.seat .s-name.n4{font-size:21px}.seat .s-name.n5{font-size:17px;letter-spacing:0}
+.seat .s-kingdom{width:25px;height:25px;font-size:17px}
+.seat .s-id{font-size:13px;padding:2px 6px}
+.seat .s-hand{font-size:19px;bottom:7px;right:8px}
+.seat .s-hp{top:34px;gap:3px}.seat .hp-bead{width:12px;height:12px}
+.seat .s-skills{top:31px;right:6px;gap:3px;max-height:calc(var(--seat-width,176px) - 62px);overflow-y:auto}
+.seat .s-sk{font-size:17px;line-height:1.25;padding:2px 5px;background:#0a1019cc;color:#ffe9b8}
+.seat .s-mark{font-size:17px;top:-27px;pointer-events:none}
+.seat .s-equips{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;margin-top:5px}
+.equip-chip{font-size:15px;min-height:23px;padding:3px 4px;line-height:1.25;background:#111a21ed;white-space:normal}
+.equip-chip .eq-ic,.equip-chip .eq-suit{font-size:12px}.equip-chip .eq-suit{margin-left:3px}
+.judge-chip{font-size:14px;padding:3px 6px}.state-badge{font-size:14px}
+#selfGeneral{max-width:330px;gap:10px}
+#selfGeneral .gcard{width:180px;height:248px}
+#selfGeneral .gc-name{font-size:29px}#selfGeneral .gc-sk{font-size:19px;padding:3px 6px}
+#selfGeneral .self-side{width:122px;max-width:none;font-size:18px}
+#selfGeneral .equip-chip{font-size:17px;padding:5px}
+.skill-inspect,.identity-note{font-size:14px;top:-29px;padding:4px 7px}
+.gcard>.skill-inspect,.gcard>.identity-note{top:-31px}
+.response-focus>.skill-inspect,.response-focus>.identity-note{top:-57px}
+.response-tag{font-size:16px}.identity-menu-title,.identity-menu button{font-size:17px}
+#actionStage{top:65%;width:min(560px,58%);min-height:0}
+.battle-action{background:transparent;border:0;box-shadow:none;border-radius:0;padding:8px;overflow:visible;grid-template-columns:92px minmax(0,1fr);gap:18px}
+.battle-action::before,.battle-action::after{display:none}
+.action-copy{text-shadow:0 2px 4px #000,0 0 12px #000,0 0 22px #000}
+.action-name{font-size:38px}.action-eyebrow{font-size:17px}.action-source,.action-targets{font-size:21px}
+.action-targets .target-name{background:transparent;border:0;padding:2px 3px;color:#ffe3a1;font-weight:bold}
+.action-visual{opacity:.4}.battle-action.settled{opacity:.75}
+#responseQueue{top:auto;bottom:0;background:transparent;border:0;box-shadow:none;padding:4px 8px;text-shadow:0 2px 4px #000,0 0 10px #000}
+.response-heading{font-size:18px}.response-direction,.response-step{font-size:14px}
+.target-path{animation:routeFade var(--route-duration,2400ms) ease-out both}
+.target-path .path-guide{fill:none;stroke-width:1.5;opacity:.35}
+.target-path .path-core{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:24 76;stroke-dashoffset:24;filter:none;animation:routeTravel 1.15s linear infinite}
+.target-path .path-head{fill:none;stroke:var(--path-color);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;filter:none;opacity:.65}
+.target-marker,.source-marker{border:1px solid color-mix(in srgb,var(--path-color),transparent 50%);box-shadow:none;animation:none}
+.target-marker span{background:transparent;border:0;box-shadow:none;font-size:17px;text-shadow:0 2px 4px #000,0 0 10px #000;bottom:-29px}
+.source-marker span{display:none}
+.skill-description p,.skill-choice p{font-size:18px}.skill-description h3,.skill-choice h3{font-size:22px}.skill-type,.skill-choice-meta,.inspector-header p{font-size:15px}
+#pickDetail.pick-skill-panel{font-size:18px!important}
+#handCards .card .cf-desc{font-size:14px!important;line-height:1.45!important;height:51px}
+#handCards .card .cf-tag{font-size:13px}#handCards .card{--badge-num:17px;--badge-suit:13.5px;--badge-w:24px}
+.modal-body,.modal-foot button{font-size:19px}
+@keyframes routeTravel{to{stroke-dashoffset:-100}}
+@keyframes routeFade{0%{opacity:0}12%,45%{opacity:.85}100%{opacity:0}}
+@media(max-height:780px){
+ :root{--dock-height:280px}
+ .seat .seat-box{height:min(var(--seat-width,176px),160px)}
+ #selfGeneral .gcard{width:166px;height:226px}
+ #controlPanel{max-height:160px;gap:5px}
+ #controlPanel #promptText{font-size:18px;max-height:50px}
+ #controlPanel .ctrl-btns button{min-height:48px;font-size:21px;padding:8px 18px}
+ #actionStage{top:67%}.action-name{font-size:32px}.action-source,.action-targets{font-size:19px}
+ .action-card .card.mini{width:82px;height:119px}
+}
+@media(max-width:1100px){
+ :root{--battle-log-width:0px}#logPanel{display:none}
+ #selfGeneral{max-width:285px}#selfGeneral .self-side{width:100px}
+ #controlPanel .ctrl-btns{gap:8px}#controlPanel .ctrl-btns button{min-width:96px;padding:9px 13px}
+}
+@media(prefers-reduced-motion:reduce){.target-path{animation:none;opacity:.5}.target-path .path-core{animation:none;stroke-dasharray:none}.target-marker{box-shadow:none}}
+
+/* Quiet seat furniture: hover skills, inline identity notes, four fixed slots. */
+.skill-inspect,.identity-note,#responseQueue,.response-tag{display:none!important}
+.skill-tooltip{position:fixed;z-index:1000;width:min(350px,calc(100vw - 24px));padding:15px 18px;border:1px solid #bca47688;border-radius:8px;background:#111b26f5;box-shadow:0 8px 28px #0008;color:#eee5d2;pointer-events:none;max-height:calc(100vh - 24px);overflow:hidden}
+.skill-tooltip h3{font-size:22px;color:#f2d397;margin:0 0 8px}.skill-tooltip p{font-size:17px;line-height:1.75;margin:0}.skill-tooltip small{display:block;margin-top:9px;font-size:14px;color:#c8b486}
+.seat .s-sk,#selfGeneral .gc-sk{cursor:help;background:linear-gradient(90deg,transparent,#071019a8);border:0;border-radius:0}
+.seat .s-sk:hover,#selfGeneral .gc-sk:hover{color:#fff2c1;text-shadow:0 0 9px #edc67b}
+#selfGeneral .gc-sk.usable{cursor:pointer}
+[data-note-control]{cursor:pointer;user-select:none}
+[data-note-control]:hover,[data-note-control]:focus-visible{outline:1px solid #ddc38b;outline-offset:2px}
+[data-note-control][data-identity="fan"]{color:#ffc2a5!important;background:#4b261ed9!important}
+[data-note-control][data-identity="zhong"]{color:#b7d9ff!important;background:#1c344bd9!important}
+[data-note-control][data-identity="nei"]{color:#dfbaff!important;background:#3b254ed9!important}
+#selfGeneral{flex-direction:column;align-items:flex-start;gap:0;max-width:none;width:180px;padding-bottom:0}
+#selfGeneral .self-side{width:100%;max-width:none;gap:2px;padding:0}
+#selfGeneral .gcard>.self-id{position:absolute;top:6px;right:6px;font-size:13px;padding:3px 6px;border-radius:3px;background:#171b20d9;color:#ead9b8;z-index:3}
+#selfGeneral .gc-name{top:35px;font-size:26px}
+.seat .s-equips,#selfGeneral .s-equips{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;margin-top:4px;width:100%}
+.seat .equip-chip,#selfGeneral .equip-chip{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:42px;min-height:42px;min-width:0;padding:2px 1px;border:1px solid #b7a27646;border-radius:3px;background:#10191dd4;line-height:1.15;text-align:center;overflow:hidden;font-size:12px;box-shadow:none}
+.equip-chip .eq-slot-label{font-size:10px;line-height:1.1;color:#aab4b8;flex-shrink:0}
+.equip-chip .eq-name{font-size:12px;color:#eee0bd;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;overflow-wrap:anywhere}
+.seat .equip-empty,#selfGeneral .equip-empty{font-size:12px;color:#99a3a688;background:#10191d75;border-color:#b7a27624}
+.seat .equip-chip:not(.equip-empty):hover,#selfGeneral .equip-chip:not(.equip-empty):hover{border-color:#d7bb79;background:#263139}
+.seat.response-focus .seat-box,.gcard.response-focus{outline:1px solid #c5eaff;outline-offset:2px;box-shadow:0 0 14px #83c5ed55!important}
+.seat.response-focus .seat-box::after,.gcard.response-focus::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#83bada,#e4f7ff);transform-origin:left;animation:responseSweep var(--poll-duration,900ms) linear both;pointer-events:none;z-index:6}
+@keyframes responseSweep{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media(max-height:780px){.seat .equip-chip,#selfGeneral .equip-chip{height:38px;min-height:38px}}
+@media(prefers-reduced-motion:reduce){.seat.response-focus .seat-box::after,.gcard.response-focus::after{animation:none}}
+
+/* Keep the decision on the battlefield instead of inside an opaque box. */
+#modal{background:radial-gradient(ellipse at center,#070d164d,transparent 72%);backdrop-filter:none}
+#modal .modal-box{background:transparent;border:0;box-shadow:none;border-radius:0;padding:24px 30px;min-width:min(340px,90vw)}
+#modal .modal-title{font-size:27px;font-weight:600;letter-spacing:.12em;color:#ffe3a6;text-shadow:0 2px 4px #000,0 0 14px #000;margin-bottom:20px}
+#modal .modal-body{font-size:19px;line-height:1.8;color:#fff0d3;text-shadow:0 2px 4px #000,0 0 12px #000;margin-bottom:24px}
+#modal .modal-body>div>span{font-size:17px!important;opacity:1!important}
+#modal .modal-foot{gap:14px;flex-wrap:wrap}
+#modal .modal-foot button,#modal .skill-choice button,#modal .opt-card{position:relative;min-width:110px;min-height:48px;padding:11px 25px;border:1px solid #c9aa6fb3;border-radius:7px;background:linear-gradient(160deg,#4c463ce8,#17232ce8);box-shadow:inset 0 1px 0 #ffe5af24,0 4px 12px #0005;color:#ffebc2;font-size:19px;font-weight:600;letter-spacing:.06em;text-shadow:0 1px 3px #000;cursor:pointer;transition:background .18s,border-color .18s,transform .18s,box-shadow .18s}
+#modal .modal-foot button:first-child{background:linear-gradient(155deg,#9a7941ed,#4c3924ed);border-color:#e1bf7c}
+#modal .modal-foot button:hover:not(:disabled),#modal .skill-choice button:hover:not(:disabled),#modal .opt-card:hover{border-color:#ffe2a0;background:linear-gradient(150deg,#8b7347,#35434a);box-shadow:inset 0 1px 0 #fff1c73b,0 5px 18px #0005;transform:translateY(-2px)}
+#modal button:focus-visible{outline:2px solid #ffe3aa;outline-offset:4px}
+#modal button:active:not(:disabled){transform:translateY(0)}
+#modal button:disabled{opacity:.45;cursor:default}
+#modal .skill-choice{background:#0c18254d;border-color:#c9aa6f55;box-shadow:none}
+.target-marker span{display:none}
+.seat .equip-chip,#selfGeneral .equip-chip{height:34px;min-height:34px}
+.equip-chip .eq-name{font-size:13px;line-height:1.15}
+@media(prefers-reduced-motion:reduce){#modal button,#modal .opt-card{transition:none}}
+
+/* Match the player's portrait to the horizontal opponent seats. */
+#selfGeneral{width:var(--seat-width,176px)}
+#selfGeneral .gcard{width:100%;height:var(--seat-width,176px)}
+#selfGeneral .gc-name{writing-mode:horizontal-tb;text-orientation:mixed;top:auto;right:auto;left:9px;bottom:6px;font-size:25px;letter-spacing:1px;line-height:1.2;
+  max-width:calc(100% - 18px);white-space:nowrap;overflow:hidden}
+#selfGeneral .gc-name.n4{font-size:22px}#selfGeneral .gc-name.n5{font-size:18px;letter-spacing:0}
+#selfGeneral .gc-kingdom{top:4px;left:4px;width:25px;height:25px;font-size:17px}
+#selfGeneral .gc-hp{top:34px;bottom:auto;left:5px;gap:3px}
+#selfGeneral .hp-bead{width:12px;height:12px}
+#selfGeneral .gc-skills{top:32px;bottom:auto;left:auto;right:6px;gap:3px;max-height:calc(var(--seat-width,176px) - 62px);overflow-y:auto}
+#selfGeneral .gc-sk{font-size:17px;line-height:1.25;padding:2px 5px}
+#selfGeneral .gcard>.self-id{top:4px;right:4px;padding:2px 6px}
+#selfGeneral .gc-portrait{background-position:center top}
+/* The narrow white control was a native scroll bar on the prompt region. */
+#promptText,.seat .s-skills,#selfGeneral .gc-skills{scrollbar-width:none}
+#promptText::-webkit-scrollbar,.seat .s-skills::-webkit-scrollbar,#selfGeneral .gc-skills::-webkit-scrollbar{display:none;width:0;height:0}
+#gameScreen{scrollbar-color:#a68e605e transparent;scrollbar-width:thin}
+#gameScreen ::-webkit-scrollbar{width:5px;height:5px}
+#gameScreen ::-webkit-scrollbar-track{background:transparent}
+#gameScreen ::-webkit-scrollbar-thumb{background:#a68e605e;border-radius:8px}
+#gameScreen ::-webkit-scrollbar-button{display:none}
+/* Centre the visible card and copy together, instead of a wide empty box. */
+#actionStage{left:50%;width:min(560px,var(--action-width,58vw));display:flex;justify-content:center;align-items:center}
+#actionStage .battle-action{width:fit-content;max-width:100%;grid-template-columns:90px minmax(0,max-content);justify-content:center;gap:20px;padding:8px}
+#actionStage .battle-action.skill-only{grid-template-columns:65px minmax(0,max-content)}
+#actionStage .action-copy{max-width:330px;overflow-wrap:anywhere}
+#actionStage .action-targets{max-width:330px}
+@media(max-height:780px){#selfGeneral .gcard{height:min(var(--seat-width,176px),160px)}#selfGeneral .gc-skills{max-height:98px}}
+
+.equip-chip .eq-distance{font-size:12px;color:#ffdf91;white-space:nowrap}
+/* Overflow-x scrolling also clips the vertical axis: reserve lift space inside
+   the scrollport so hovering and selection never cut off the card's top edge. */
+#handArea{height:calc(var(--card-h) + 38px);min-height:calc(var(--card-h) + 38px);padding:28px 8px 4px;position:relative;overflow-x:auto;overflow-y:hidden}
+#handCards{height:calc(var(--card-h) + 6px);padding:0 4px 3px;overflow:visible}
+#handCards .card:hover,#handCards .card.sel{position:relative;z-index:12}
