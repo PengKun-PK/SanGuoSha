@@ -1,6 +1,6 @@
 /* ================= 入口 ================= */
 (function(){
-const opts = { count:5, diff:'hard', speed:1, aiThink:800 };
+const opts = { count:5, diff:'hard', speed:1, aiThink:800, identity:'random' };
 
 /* ---- 开始界面选项 ---- */
 function seg(id, cb){
@@ -14,6 +14,7 @@ function seg(id, cb){
 }
 seg('optCount', v=>opts.count=+v);
 seg('optDiff',  v=>opts.diff=v);
+seg('optIdentity', v=>opts.identity=v);
 seg('optSpeed', v=>{ opts.speed=+v; U.speed=+v; U.$('battleSpeed').value=v;
   document.documentElement.style.setProperty('--spd', v); });
 U.speed = opts.speed;
@@ -21,6 +22,14 @@ U.$('battleSpeed').onchange=e=>{U.speed=+e.target.value;document.documentElement
 
 U.$('btnRules').onclick = ()=>UI.modal({title:'玩法说明', body:RULES,
   buttons:[{label:'知道了',value:1}]});
+
+/* 开始与选将界面的背景火星，与战场共用 .ember 的动画 */
+for(const host of document.querySelectorAll('.scenery-embers'))
+  for(let i=0;i<18;i++){
+    const e=U.el('i','ember');
+    e.style.cssText=`--x:${(i*47)%100}%;--size:${2+i%3}px;--life:${10+i%8}s;--delay:-${i*1.9}s`;
+    host.appendChild(e);
+  }
 
 U.$('btnStart').onclick = ()=>startPick();
 U.$('btnAgain').onclick = ()=>location.reload();
@@ -40,11 +49,14 @@ function startPick(){
   const lordId = ids.shift();                  // 主公固定 0 号位
   U.shuffle(ids);
   const seats = [lordId, ...ids];
-  const humanSeat = U.rand(n);
+  /* 指定身份时，从该身份的座位里随机挑一个；主公固定 0 号位 */
+  const wanted = opts.identity && opts.identity!=='random'
+    ? seats.reduce((acc,id,i)=>(id===opts.identity?acc.concat(i):acc),[]) : [];
+  const humanSeat = wanted.length ? U.pick(wanted) : U.rand(n);
 
   /* 主公用的武将从主公将里选，其余随机 */
-  const pool = Object.keys(GENERALS);
-  const lordPool = LORD_LIST.slice();
+  const pool = pickableGenerals();
+  const lordPool = LORD_LIST.filter(id=>!DISABLED_GENERALS.has(id));
   const used = new Set();
 
   const humanIsLord = humanSeat===0;
@@ -56,7 +68,7 @@ function startPick(){
   U.$('startScreen').classList.add('hidden');
   U.$('pickScreen').classList.remove('hidden');
   U.$('pickIdentity').textContent = IDENTITY[seats[humanSeat]].name;
-  U.$('pickIdentity').className = '';
+  U.$('pickIdentity').className = 'id-'+seats[humanSeat];
   U.$('pickHint').innerHTML =
     `目标：${IDENTITY[seats[humanSeat]].desc}　|　本局 ${n} 人：` +
     IDENTITY_SETUP[n].map(i=>IDENTITY[i].name).join('、');
@@ -111,11 +123,11 @@ function begin(humanGid){
     let gid;
     if(i===st.humanSeat) gid=humanGid;
     else if(st.seats[i]==='zhu'){
-      const c=LORD_LIST.filter(x=>!used.has(x));
-      gid = c.length?U.pick(c):U.pick(Object.keys(GENERALS).filter(x=>!used.has(x)));
+      const c=LORD_LIST.filter(x=>!used.has(x) && !DISABLED_GENERALS.has(x));
+      gid = c.length?U.pick(c):U.pick(pickableGenerals().filter(x=>!used.has(x)));
     }else{
-      const c=Object.keys(GENERALS).filter(x=>!used.has(x) && !LORD_LIST.includes(x));
-      gid = U.pick(c.length?c:Object.keys(GENERALS).filter(x=>!used.has(x)));
+      const c=pickableGenerals().filter(x=>!used.has(x) && !LORD_LIST.includes(x));
+      gid = U.pick(c.length?c:pickableGenerals().filter(x=>!used.has(x)));
     }
     used.add(gid);
     players.push(new Player(i, gid, st.seats[i], i===st.humanSeat));

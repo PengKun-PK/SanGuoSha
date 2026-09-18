@@ -211,10 +211,30 @@ function judgeChips(container, p){
 function setText(el, txt){ if(el && el.textContent!==txt) el.textContent = txt; }
 function setCls(el, cls){ if(el && el.className!==cls) el.className = cls; }
 
+/* 横置改用铁链图形斜挂在右上角，不再占用左上角的文字标记（会压住血条） */
+const CHAIN_LINKS=[18,45,72,99];
+const chainRings=(w,dy,color,op)=>CHAIN_LINKS.map(x=>
+  `<ellipse cx="${x}" cy="${13+dy}" rx="14" ry="8.5" fill="none" stroke="${color}" stroke-width="${w}"${op?` opacity="${op}"`:''}/>`).join('');
+const CHAIN_SVG=`<svg viewBox="0 0 118 26" preserveAspectRatio="none" aria-hidden="true">
+ ${chainRings(8,0,'#14181d')}
+ ${chainRings(4.6,0,'#b9c6d3')}
+ ${chainRings(1.8,-1.6,'#f4f9ff','.85')}
+</svg>`;
+function renderChain(el,p){
+  let mark=el.querySelector(':scope > .chain-mark');
+  if(!p.marks.linked){ mark?.remove(); return; }
+  if(!mark){
+    mark=U.el('div','chain-mark');
+    mark.innerHTML=CHAIN_SVG;
+    mark.title='横置（铁索连环）：受到属性伤害会传导给其他横置角色';
+    el.appendChild(mark);
+  }
+}
 function renderState(el,p){
   el.classList.toggle('turned',!!p.marks.turned);el.classList.toggle('linked',!!p.marks.linked);
   let badge=el.querySelector('.state-badge');if(!badge){badge=U.el('div','state-badge');el.appendChild(badge);}
-  badge.textContent=[p.marks.turned?'背面':'',p.marks.linked?'连环':'',p.marks.fields?.length?'田 '+p.marks.fields.length:'',p.marks.buqu?.length?'不屈 '+p.marks.buqu.map(c=>c.num).join('/'):'',p.marks.forms?.length?'化身 '+p.marks.forms.length:'',p.hp<=0&&p.alive?'体力 '+p.hp:''].filter(Boolean).join(' · ');
+  renderChain(el,p);
+  badge.textContent=[p.marks.turned?'背面':'',p.marks.fields?.length?'田 '+p.marks.fields.length:'',p.marks.buqu?.length?'不屈 '+p.marks.buqu.map(c=>c.num).join('/'):'',p.marks.forms?.length?'化身 '+p.marks.forms.length:'',p.hp<=0&&p.alive?'体力 '+p.hp:''].filter(Boolean).join(' · ');
   badge.style.display=badge.textContent?'':'none';
 }
 
@@ -381,7 +401,13 @@ function clearTargets(){
 function applyCardStates(){
   const cards=[...U.$('handCards').children];
   if(P) for(const chip of U.$('selfGeneral').querySelectorAll('.equip-chip')){ const c=P.p.equipList().find(x=>chip.textContent.includes(x.name)); if(c){ chip.classList.toggle('sel',P.sel.includes(c)); chip.classList.toggle('usable',cardSelectable(c)); } }
-  if(!P){ cards.forEach(e=>e.classList.remove('dis','usable','sel')); return; }
+  if(!P){
+    cards.forEach(e=>{
+      e.classList.remove('dis','usable');
+      e.classList.toggle('sel', !!pendingPick && e._card===pendingPick);
+    });
+    return;
+  }
   for(const e of cards){
     const c=e._card; if(!c)continue;
     e.classList.toggle('sel', P.sel.includes(c));
@@ -391,21 +417,23 @@ function applyCardStates(){
   }
 }
 
+/* 出牌阶段某张牌是否可选；抽出来给「动画期间预选」复用，判断口径保持一致 */
+function playSelectable(g,p,c,view){
+  if(view) return view.filter(g,p,c) && (view.area==='any'||p.hand.includes(c));
+  if(g.canUseInPlay(p,c) && p.hand.includes(c)) return true;
+  return VIEW_AS.some(v=>{
+    if(v.ask) return false;
+    if(v.equip){ if(!(p.equips.weapon&&p.equips.weapon.name==='丈八蛇矛')) return false; }
+    else if(!p.hasSkill(v.id)) return false;
+    if(v.extra && !v.extra(g,p)) return false;
+    if(!v.filter(g,p,c)) return false;
+    const probe = makeVirtual(v.as,[c],v.id);
+    return v.count===1 ? g.canUseInPlay(p,probe) : true;
+  });
+}
 function cardSelectable(c){
   const {g,p,req}=P;
-  if(req.kind==='play'){
-    if(P.view) return P.view.filter(g,p,c) && (P.view.area==='any'||p.hand.includes(c));
-    if(g.canUseInPlay(p,c) && p.hand.includes(c)) return true;
-    return VIEW_AS.some(v=>{
-      if(v.ask) return false;
-      if(v.equip){ if(!(p.equips.weapon&&p.equips.weapon.name==='丈八蛇矛')) return false; }
-      else if(!p.hasSkill(v.id)) return false;
-      if(v.extra && !v.extra(g,p)) return false;
-      if(!v.filter(g,p,c)) return false;
-      const probe = makeVirtual(v.as,[c],v.id);
-      return v.count===1 ? g.canUseInPlay(p,probe) : true;
-    });
-  }
+  if(req.kind==='play') return playSelectable(g,p,c,P.view);
   if(req.kind==='respond'){
     return P.respondPool.includes(c);
   }
@@ -434,6 +462,7 @@ function request(g, p, req){
     if(req.kind==='respond') P.respondPool = respondPoolOf(g,p,req);
     startRequest();
     refresh(g);
+    applyPendingPick();
   });
 }
 
@@ -525,8 +554,27 @@ function finish(val){
 }
 
 /* ---- 点击手牌 ---- */
+/* 出牌动画期间没有待处理请求，此时点手牌先记下来，等下一个出牌请求开始时自动套用 */
+let pendingPick=null;
+function paintPendingPick(){
+  for(const e of U.$('handCards').children)
+    e.classList.toggle('sel', !!pendingPick && e._card===pendingPick);
+}
+function applyPendingPick(){
+  const c=pendingPick; pendingPick=null;
+  if(!c || !P || P.req.kind!=='play' || !P.p.hand.includes(c)) { paintPendingPick(); return; }
+  onCardClick(c);
+}
 function onCardClick(c){
-  if(!P || !U.$('modal').classList.contains('hidden')) return;
+  if(!U.$('modal').classList.contains('hidden')) return;
+  if(!P){
+    const g=window.__game, h=g&&g.human;
+    if(!g || !h || !h.alive || g.over || g.curPlayer!==h || g.phase!=='play') return;
+    if(!h.hand.includes(c) || !playSelectable(g,h,c,null)) return;
+    pendingPick = pendingPick===c ? null : c;
+    paintPendingPick();
+    return;
+  }
   const {g,p,req}=P;
   if(!cardSelectable(c) && !P.sel.includes(c)) return;
   const i=P.sel.indexOf(c);

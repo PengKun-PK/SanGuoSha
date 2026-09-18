@@ -776,6 +776,9 @@ class Game {
 
   /* ---------------- 出牌阶段 ---------------- */
   async playPhase(p){
+    /* 非法出牌时人类分支是重新询问；加个上限兜底，避免请求源一直返回同一个
+       非法动作时整局卡死（真人永远到不了这个次数）。 */
+    let rejected=0;
     while(p.alive && !this.over){
       const beforeAction=this.actionSignature(p);
       const act = p.isHuman
@@ -783,7 +786,7 @@ class Game {
         : (await U.wait(this.opts.aiThink||280), await AI.playTurn(this,p));
       if(!act || act.type==='end') break;
       if(act.type==='use'){
-        if(!this.validPlay(p,act)) { if(!p.isHuman) break; continue; }
+        if(!this.validPlay(p,act)) { if(!p.isHuman || ++rejected>50) break; continue; }
         await this.useCard(p, act.card, act.targets||[], act.opt||{});
       }else if(act.type==='skill'){
         await this.runSkill(act.skill, p, act.ctx||{});
@@ -895,8 +898,13 @@ const CardEffect = {
        (target.equips.horseMinus||target.equips.horsePlus)){
       const yes = await g.ask(user,{kind:'confirm', prompt:`【麒麟弓】：是否弃置 ${target.name} 的一匹坐骑？`});
       if(yes){
-        const h = target.equips.horseMinus||target.equips.horsePlus;
-        await g.discardCards(target,[h],'麒麟弓');
+        /* 两匹坐骑都在时由使用者选择弃置哪一匹，不能默认弃 −1 马 */
+        const horses=[target.equips.horseMinus,target.equips.horsePlus].filter(Boolean);
+        const h = horses.length>1
+          ? (await g.ask(user,{kind:'pickFrom', cards:horses,
+              prompt:`【麒麟弓】：选择弃置 ${target.name} 的一匹坐骑`}) || horses[0])
+          : horses[0];
+        if(h) await g.discardCards(target,[h],'麒麟弓');
       }
     }
   },

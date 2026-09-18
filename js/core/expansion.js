@@ -220,7 +220,7 @@ EX.add('zhijian','直谏','出牌阶段可将手牌中的装备置入其他角�
 EX.add('guzheng','固政','其他角色弃牌阶段结束时，可将其弃置的一张手牌归还，并获得此阶段其余仍在弃牌堆的弃牌。',{event:'phaseAfter',can:(g,p,c)=>c.phase==='discard'&&c.player!==p&&(g.phaseDiscards||[]).some(x=>x.player===c.player&&x.hand&&g.discard.includes(x.card)),async run(g,p,c){const list=g.phaseDiscards.filter(x=>g.discard.includes(x.card));const own=list.filter(x=>x.player===c.player&&x.hand).map(x=>x.card);const x=await g.ask(p,{kind:'pickFrom',cards:own,prompt:'固政：归还一张弃置的手牌'});if(!x)return;await g.gain(c.player,[x]);await g.gain(p,list.map(x=>x.card).filter(c=>c!==x&&g.discard.includes(c)));}});
 EX.add('beige','悲歌','角色受到杀的伤害后，可弃置一张牌令其判定：红桃回复1；方块摸2；梅花伤害来源弃2；黑桃来源翻面。',{event:'damaged',can:(g,p,c)=>c.card?.name==='杀'&&p.hand.length+p.equipList().length>0,async run(g,p,c){const r=await EX.cards(g,p,'beige',1,1,()=>true,'any');if(!r?.cards?.length)return;await g.discardCards(p,r.cards,'悲歌');const jd=await g.judge(c.target,{reason:'悲歌',check:()=>true});const s=jd.card?.suit;if(s==='heart')await g.recover(c.target,1);if(s==='diamond')await g.drawCards(c.target,2);if(c.source?.alive&&s==='spade')await EX.flip(g,c.source);if(c.source?.alive&&s==='club'){const src=c.source,n=Math.min(2,src.hand.length+src.equipList().length);if(n){const r=await EX.cards(g,src,'悲歌',n,n,()=>true,'any',{cancelable:false});await g.discardCards(src,r?.cards||src.hand.concat(src.equipList()).slice(0,n),'悲歌');}}}});
 EX.add('duanchang','断肠','锁定技，杀死你的角色失去所有武将技能。',{event:'deathBefore',forced:true,can:(g,p,c)=>c.player===p&&c.killer&&c.killer!==p,async run(g,p,c){c.killer.skills=[];g.log(`${c.killer.name}断肠，失去所有武将技能。`,true);}});
-EX.getForms=async(g,p,n)=>{p.marks.forms||=[];const used=g.players.map(q=>q.gid);const pool=Object.keys(GENERALS).filter(id=>id!=='zuoci'&&!used.includes(id)&&!p.marks.forms.includes(id));p.marks.forms.push(...U.sample(pool,n));};
+EX.getForms=async(g,p,n)=>{p.marks.forms||=[];const used=g.players.map(q=>q.gid);const pool=Object.keys(GENERALS).filter(id=>id!=='zuoci'&&!DISABLED_GENERALS.has(id)&&!used.includes(id)&&!p.marks.forms.includes(id));p.marks.forms.push(...U.sample(pool,n));};
 EX.transform=async(g,p)=>{
  const pool=(p.marks.forms||[]).flatMap(gid=>GENERALS[gid].skills.filter(id=>!SKILLS[id].lord&&!['niepan','luanwu','huashen','xinsheng','zaoxian','zhiji','hunzi','ruoyu'].includes(id)).map(id=>({gid,id,label:GENERALS[gid].name+' · '+SKILL_TEXT[id][0]})));
  if(!pool.length)return;
@@ -285,6 +285,7 @@ EX.aiPlay=function(g,p){
    }
  }
  const fire=p.hand.find(c=>c.name==='火攻');if(fire&&p.hand.length>=3){const targets=g.legalTargets(p,fire).filter(enemy);if(targets.length)return {type:'use',card:fire,targets:[targets[0]]};}
- const chain=p.hand.find(c=>c.name==='铁索连环');if(chain){const ts=g.alivePlayers().filter(q=>friend(q)&&q.marks.linked||enemy(q)&&!q.marks.linked).slice(0,2);if(ts.length)return {type:'use',card:chain,targets:ts};return useSkill('recast');}
+ // 必须过一遍合法目标：铁索连环是黑色锦囊，帷幕角色不能被指定
+ const chain=p.hand.find(c=>c.name==='铁索连环');if(chain){const ts=g.legalTargets(p,chain).filter(q=>friend(q)&&q.marks.linked||enemy(q)&&!q.marks.linked).slice(0,2);if(ts.length)return {type:'use',card:chain,targets:ts};return useSkill('recast');}
  return null;
 };

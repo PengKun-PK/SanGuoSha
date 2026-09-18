@@ -32,7 +32,10 @@
 #promptTimer{display:none}
 #handArea{width:100%;height:198px;min-height:198px;flex:none;padding:10px 6px 0;align-items:flex-end;overflow-x:auto;overflow-y:hidden}
 #handCards{height:188px;min-width:100%;padding:0 4px 3px;align-items:flex-end}
-#handCards .card{margin-right:-22px}#handCards .card:hover,#handCards .card.sel{transform:translateY(-9px) scale(1.025)}
+#handCards .card{margin-right:-22px}
+/* 悬停与选中必须看得出区别，否则取消选择后鼠标还停在牌上，看起来像没取消 */
+#handCards .card:hover{transform:translateY(-8px) scale(1.02)}
+#handCards .card.sel{transform:translateY(-24px) scale(1.06)}
 #centerZone{position:absolute;left:0;right:0;top:auto;bottom:12px;transform:none;display:block;height:78px;pointer-events:none}
 #deckPile,#discardPile{position:absolute;bottom:0;transform:scale(.72);transform-origin:bottom center;opacity:.8}
 #deckPile{left:28%}#discardPile{right:28%}
@@ -345,3 +348,100 @@
 #modal.guanxing-modal .card.mini{flex:none;width:var(--guanxing-card-w);height:calc(var(--guanxing-card-w) * 1.46);margin:0;cursor:pointer}
 #modal.guanxing-modal .modal-foot button{min-height:44px;padding:8px 25px;font-size:18px}
 @media(max-height:550px){#modal.guanxing-modal .modal-box{padding:10px 16px}#modal.guanxing-modal .modal-title{font-size:21px;margin-bottom:6px}#modal.guanxing-modal .modal-body{gap:5px;margin-bottom:10px}}
+
+/* ================= 开始 / 选将界面 =================
+   与战场共用同一张背景与火星动画，避免再引入新素材。 */
+.screen-scenery{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.scenery-photo{position:absolute;inset:-5%;
+  background:url('../assets/art/battlefield.png') center 46%/cover no-repeat;
+  filter:saturate(.8) brightness(.62) contrast(1.04);
+  animation:sceneryDrift 52s ease-in-out infinite alternate}
+.scenery-haze{position:absolute;width:82%;height:44%;
+  background:radial-gradient(ellipse,#c3c9c218,transparent 66%);filter:blur(22px);
+  animation:smokeDrift 26s ease-in-out infinite alternate}
+.scenery-haze.haze-a{left:-16%;top:22%}
+.scenery-haze.haze-b{right:-18%;top:44%;animation-duration:34s;animation-direction:alternate-reverse}
+.scenery-embers{position:absolute;inset:0}
+.scenery-veil{position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 32%,#e8c86a26,transparent 58%),
+             linear-gradient(180deg,#0b0906a3,#0b0906bf 58%,#0b0906e8)}
+.scenery-standard{position:absolute;top:14%;width:72px;height:180px;opacity:.5;
+  filter:drop-shadow(0 3px 9px #000);transform:rotate(-8deg)}
+.scenery-standard.standard-l{left:7%}
+.scenery-standard.standard-r{right:7%;transform:rotate(8deg)}
+.scenery-standard i{position:absolute;left:0;top:-15px;bottom:-50px;width:4px;
+  background:linear-gradient(90deg,#19191a,#a28e64,#2e251b)}
+.scenery-standard span{position:absolute;left:4px;top:0;display:grid;place-items:center;
+  width:66px;height:108px;background:linear-gradient(100deg,#4c171a,#91322abf,#38181b);
+  border-top:2px solid #b18e5f;border-bottom:2px solid #a47840;color:#e5c69c;font:36px KaiTi,serif;
+  clip-path:polygon(0 0,100% 7%,92% 100%,52% 91%,0 100%);transform-origin:left center;
+  animation:flagWave 3.5s ease-in-out infinite alternate}
+@keyframes sceneryDrift{from{transform:scale(1)}to{transform:scale(1.09) translate(-1.6%,-1.2%)}}
+.start-inner,.pick-head,#pickList,.pick-filters,#pickDetail,#btnPickConfirm{position:relative;z-index:1}
+
+/* 面板与按钮 */
+.start-panel{background:linear-gradient(165deg,#1b140dd9,#100c08e6);
+  border:1px solid #e8c86a3d;border-radius:14px;padding:24px 32px;
+  box-shadow:0 22px 60px #000a,inset 0 1px 0 #ffe6ad1f;backdrop-filter:blur(3px)}
+.opt-row>label{color:#c2ae84;letter-spacing:.14em}
+.seg button{background:linear-gradient(180deg,#2a2118b3,#14100bcc);border-color:#e8c86a30;
+  color:#b3a487;transition:background .16s,border-color .16s,color .16s,transform .12s}
+.seg button:hover{background:linear-gradient(180deg,#3a2d1e,#1d160e);transform:translateY(-1px)}
+.seg button.on{background:linear-gradient(180deg,#c39a3d,#7d5c16);color:#fff7e0;
+  border-color:#f0d78a;box-shadow:0 0 14px #e8c86a38,inset 0 1px 0 #fff2c880}
+.seg-id{gap:5px}
+.seg-id button{padding:8px 0;font-size:13px;letter-spacing:.04em}
+.seg-id button[data-id="zhu"].on{background:linear-gradient(180deg,#c9a227,#8a6a14);border-color:#f0d78a}
+.seg-id button[data-id="zhong"].on{background:linear-gradient(180deg,#3b72b8,#24466b);border-color:#8fbcf0;color:#eaf3ff}
+.seg-id button[data-id="fan"].on{background:linear-gradient(180deg,#a8392f,#6b201a);border-color:#e2897b;color:#ffe6e0}
+.seg-id button[data-id="nei"].on{background:linear-gradient(180deg,#6d47a0,#412a63);border-color:#bd9ae6;color:#f0e4ff}
+.btn-primary{border:1px solid #f0d78a99;box-shadow:0 5px 0 #4d340a,0 12px 28px #0007,inset 0 1px 0 #fff3cf6b}
+.btn-primary:disabled{filter:grayscale(.65) brightness(.62);box-shadow:0 3px 0 #3a2807;transform:none}
+.btn-ghost{border-radius:6px;transition:color .16s,background .16s}
+.btn-ghost:hover{background:#e8c86a14}
+.pick-identity b.id-zhu{color:#ffdf8a}.pick-identity b.id-zhong{color:#a8cdff}
+.pick-identity b.id-fan{color:#ff9f8c}.pick-identity b.id-nei{color:#d9b6ff}
+
+/* 选将筛选栏 */
+.pick-filters button{background:linear-gradient(180deg,#261f16b3,#130f0acc);border:1px solid #e8c86a2e;
+  color:#b3a487;border-radius:6px;transition:.16s}
+.pick-filters button:hover{border-color:#e8c86a80;color:#ffeec2}
+.pick-filters button.on{background:linear-gradient(180deg,#a8842f,#6d5316);color:#fff6dc;border-color:#f0d78a}
+.pick-filters input{background:#14100bd9;border:1px solid #e8c86a2e;border-radius:6px;
+  color:#f0e2c2;padding:6px 12px;min-width:210px;transition:.16s}
+.pick-filters input:focus{outline:none;border-color:#e8c86a99;background:#1d160ee6}
+.pick-filters input::placeholder{color:#7d7059}
+#pickDetail.pick-skill-panel{background:#0f1a14b8;border:1px solid #7ca88f3d;border-radius:8px;padding:12px 16px}
+/* 滚动条隐藏后，用底部渐隐提示列表还能继续滚动 */
+.pick-list{-webkit-mask-image:linear-gradient(180deg,#000 calc(100% - 46px),transparent);
+  mask-image:linear-gradient(180deg,#000 calc(100% - 46px),transparent);padding-bottom:12px}
+#btnPickConfirm{min-width:190px;padding:14px 0}
+
+/* 滚动条：开始与选将界面一律隐藏，保留滚动能力 */
+#startScreen,#pickScreen,.pick-list,#pickDetail,.pick-filters{scrollbar-width:none;-ms-overflow-style:none}
+#startScreen::-webkit-scrollbar,#pickScreen::-webkit-scrollbar,.pick-list::-webkit-scrollbar,
+#pickDetail::-webkit-scrollbar,.pick-filters::-webkit-scrollbar{display:none;width:0;height:0}
+@media(prefers-reduced-motion:reduce){
+  .scenery-photo,.scenery-haze,.scenery-standard span{animation:none!important}
+  .scenery-embers{display:none}
+}
+@media(max-height:780px){
+  #pickScreen{gap:11px;padding:14px}
+  .pick-list{max-height:44vh!important}
+  #btnPickConfirm{padding:10px 0;min-width:170px}
+  #pickDetail.pick-skill-panel{padding:8px 14px;min-height:52px}
+  .start-panel{padding:18px 28px;gap:12px}
+}
+
+/* 横置（铁索连环）：右上角斜绑的铁链，替代会压住血条的文字标记。
+   外层是一个裁剪到边框内的角块，铁链在里面斜着穿过，因此不会溢出武将框。 */
+.chain-mark{position:absolute;right:0;top:0;width:58px;height:58px;overflow:hidden;
+  z-index:7;pointer-events:none;border-top-right-radius:9px;opacity:.62}
+/* 链条沿角块的对角线摆放：绕自身中心转 45°，两端正好顶到角块的两个角 */
+.chain-mark svg{position:absolute;left:-13px;top:20px;width:84px;height:17px;display:block;
+  transform:rotate(45deg);
+  filter:drop-shadow(0 1px 2px #000c) drop-shadow(0 0 4px #64b6d4aa)}
+.seat .chain-mark{width:54px;height:54px}
+.seat .chain-mark svg{left:-12px;top:19px;width:78px;height:16px}
+/* 文字标记让开左上角的血条 */
+.state-badge{left:auto!important;right:6px;top:auto!important;bottom:26px;max-width:72%!important;text-align:right}

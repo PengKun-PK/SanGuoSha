@@ -309,9 +309,19 @@ fanjian:{name:'反间', active:true,
     if(!res||!res.length) return;
     p.flags.fanjianUsed=true;
     const t=res[0];
-    const card = U.pick(p.hand);
+    if(!p.hand.length) return;
+    /* 本作规则：由反间的目标从周瑜手牌里盲选一张，再猜其花色。
+       牌以背面展示，_back/_label 只在弹窗期间挂在牌上，选完即清掉。 */
+    const pool = p.hand.slice();
+    pool.forEach((c,i)=>{ c._back=true; c._label='手牌 '+(i+1); });
+    let picked;
+    try{
+      picked = await g.ask(t,{kind:'pickFrom', cards:pool, facedown:true,
+        prompt:`${p.name} 发动【反间】：从其手牌中选择一张`});
+    }finally{ for(const c of pool){ delete c._back; delete c._label; } }
+    const card = pool.includes(picked) ? picked : U.pick(pool);
     const suit = await g.ask(t,{kind:'choose', options:['黑桃','红桃','梅花','方块'],
-      prompt:`${p.name} 发动【反间】，请选择一种花色`});
+      prompt:`${p.name} 的【反间】：猜测这张牌的花色`});
     g.log(`${g.nm(t)} 选择了 ${suit}。`);
     g.removeCard(p,card);
     t.hand.push(card);
@@ -368,18 +378,19 @@ lijian:{name:'离间', active:true,
     const res = await g.ask(p,{kind:'select', tag:'lijian', min:1,max:1, area:'any', cancelable:true,
       prompt:'【离间】：弃置一张牌，令两名男性角色决斗'});
     if(!res||!res.cards||!res.cards.length) return;
-    const t1 = await g.ask(p,{kind:'chooseTarget',tag:'lijian1',min:1,max:1,filter:q=>males.includes(q),
-      prompt:'【离间】：选择第一名男性角色（视为其使用【决斗】）'});
-    if(!t1||!t1.length) return;
-    const t2 = await g.ask(p,{kind:'chooseTarget',tag:'lijian2',min:1,max:1,filter:q=>males.includes(q)&&q!==t1[0],
-      prompt:'【离间】：选择第二名男性角色（决斗目标）'});
-    if(!t2||!t2.length) return;
+    /* 一次选定两名男性角色：先选的先出【杀】。决斗由目标先出杀，
+       所以先选的人作为决斗的目标，后选的人作为使用者。 */
+    const ts = await g.ask(p,{kind:'chooseTarget',tag:'lijian',min:2,max:2,cancelable:true,
+      filter:q=>males.includes(q),
+      prompt:'【离间】：选择两名男性角色（先选的先出【杀】）'});
+    if(!ts || ts.length!==2) return;
+    const [first, second] = ts;
     p.flags.lijianUsed=true;
     await g.discardCards(p,res.cards,'离间');
     const fake = makeVirtual('决斗',[], 'lijian');
-    g.log(`${g.nm(t1[0])} 与 ${g.nm(t2[0])} 展开决斗！`, true);
-    FX.beam(UI.elOf(t1[0]),UI.elOf(t2[0]),'hostile');
-    await CardEffect['决斗'](g,{user:t1[0], card:fake, target:t2[0], opt:{}});
+    g.log(`${g.nm(first)} 与 ${g.nm(second)} 展开决斗！由 ${g.nm(first)} 先出【杀】。`, true);
+    FX.beam(UI.elOf(second),UI.elOf(first),'hostile');
+    await CardEffect['决斗'](g,{user:second, card:fake, target:first, opt:{}});
   }},
 
 biyue:{name:'闭月', event:'phaseStart',

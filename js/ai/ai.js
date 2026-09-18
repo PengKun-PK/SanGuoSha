@@ -352,6 +352,8 @@ async function decide(g,p,req){
   }
 
   case 'pickFrom':{
+    /* 背面展示的牌只能随机选，不能按牌面挑最优 */
+    if(req.facedown) return U.pick(req.cards);
     return bestCards(g,p,req.cards,1)[0];
   }
 
@@ -453,12 +455,12 @@ function targetsFor(g,p,req){
   if(tag==='fanjian'){
     return [U.max(cand,q=>-attitude(g,p,q)+ (q.hp<=1?30:0))];
   }
-  if(tag==='lijian1'){
-    /* 让最强的敌人先出杀：他会消耗牌 */
-    return [U.max(cand,q=>-attitude(g,p,q)+threat(g,p,q))];
-  }
-  if(tag==='lijian2'){
-    return [U.max(cand,q=>-attitude(g,p,q)+(q.hp<=1?40:0)-threat(g,p,q)*0.3)];
+  if(tag==='lijian'&&(req.max||1)>1){
+    /* 一次选两人：先选的先出杀，让牌多的强敌先消耗；后选的挑残血好收 */
+    const first=U.max(cand,q=>-attitude(g,p,q)+threat(g,p,q));
+    const rest=cand.filter(q=>q!==first);
+    if(!rest.length) return [first];
+    return [first, U.max(rest,q=>-attitude(g,p,q)+(q.hp<=1?40:0)-threat(g,p,q)*0.3)];
   }
   if(['jieming','zhijian','fangquan'].includes(tag)) return cand.sort((a,b)=>(attitude(g,p,b)-b.hand.length*8)-(attitude(g,p,a)-a.hand.length*8)).slice(0,req.max||1);
   if(tag==='dimeng'){let best=null,score=0;for(const a of cand)for(const b of cand){const cost=Math.abs(a.hand.length-b.hand.length);if(cost>p.hand.length+p.equipList().length)continue;const v=(attitude(g,p,a)-attitude(g,p,b))*(b.hand.length-a.hand.length)-cost*30;if(v>score){score=v;best=[a,b];}}return best;}

@@ -14,7 +14,14 @@
 
 <!-- ============ 开始界面 ============ -->
 <div id="startScreen" class="screen">
-  <div class="start-bg"></div>
+  <div class="screen-scenery" aria-hidden="true">
+    <div class="scenery-photo"></div>
+    <div class="scenery-haze haze-a"></div><div class="scenery-haze haze-b"></div>
+    <div class="scenery-standard standard-l"><i></i><span>蜀</span></div>
+    <div class="scenery-standard standard-r"><i></i><span>魏</span></div>
+    <div class="scenery-embers"></div>
+    <div class="scenery-veil"></div>
+  </div>
   <div class="start-inner">
     <h1 class="game-title"><span>三</span><span>国</span><span>杀</span></h1>
     <p class="subtitle">风 · 火 · 林 · 山 / 身份局</p>
@@ -37,6 +44,16 @@
         </div>
       </div>
       <div class="opt-row">
+        <label>身份</label>
+        <div class="seg seg-id" id="optIdentity">
+          <button data-v="random" class="on">随机</button>
+          <button data-v="zhu" data-id="zhu">主公</button>
+          <button data-v="zhong" data-id="zhong">忠臣</button>
+          <button data-v="fan" data-id="fan">反贼</button>
+          <button data-v="nei" data-id="nei">内奸</button>
+        </div>
+      </div>
+      <div class="opt-row">
         <label>动画</label>
         <div class="seg" id="optSpeed">
           <button data-v="1.5">慢</button>
@@ -53,6 +70,12 @@
 
 <!-- ============ 选将界面 ============ -->
 <div id="pickScreen" class="screen hidden">
+  <div class="screen-scenery" aria-hidden="true">
+    <div class="scenery-photo"></div>
+    <div class="scenery-haze haze-a"></div><div class="scenery-haze haze-b"></div>
+    <div class="scenery-embers"></div>
+    <div class="scenery-veil"></div>
+  </div>
   <div class="pick-head">
     <div class="pick-identity">你的身份：<b id="pickIdentity">—</b></div>
     <h2>请选择你的武将</h2>
