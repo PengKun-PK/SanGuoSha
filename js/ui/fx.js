@@ -19,12 +19,51 @@ function banner(skillName, whoName){
   return U.wait(560);
 }
 
+/* 同一时刻只留一条横幅。横幅只阻塞几百毫秒，寿命却有一秒多，
+   所以弃牌阶段的横幅还没散完，下一位的「回合开始」就压上来了，
+   摸牌→出牌之间同理；两条都居中就会叠成一团。 */
+let liveBanner = null;
+function retireBanner(){
+  const el = liveBanner;
+  if(!el) return;
+  liveBanner = null;
+  // 只给终点帧：起点取当前正在播的透明度，于是接着淡出，而不是先跳回不透明
+  el.animate([{opacity:0}], {duration:170, fill:'forwards'});
+  setTimeout(()=>el.remove(), 190);
+}
+function holdBanner(el, life){
+  retireBanner();
+  liveBanner = el;
+  banners().appendChild(el);
+  setTimeout(()=>{ if(liveBanner===el) liveBanner = null; el.remove(); }, life);
+}
+
 function turnBanner(name, sub){
   const b = U.el('div','turn-banner');
   b.innerHTML = `<div class="tb-name">${U.escape(name)}</div><div class="tb-sub">${U.escape(sub||'回合开始')}</div>`;
-  banners().appendChild(b);
-  setTimeout(()=>b.remove(),1250);
+  holdBanner(b, 1250);
   return U.wait(520);
+}
+
+/* ---- 阶段提示 ----
+   回合开始/结束阶段没有可见动作，横幅只会拖慢节奏，所以不提示；
+   判定阶段只在判定区真有牌时才提示。 */
+const PHASE_LABEL = {judge:'判定阶段', draw:'摸牌阶段', play:'出牌阶段', discard:'弃牌阶段'};
+function phaseBanner(phase, whoName, ctx){
+  const label = PHASE_LABEL[phase];
+  if(!label) return Promise.resolve();
+  if(phase==='judge' && !(ctx && ctx.judges)) return Promise.resolve();
+  const life = 1250*U.speed + 300;
+  const b = U.el('div','phase-banner');
+  b.style.setProperty('--life', life+'ms');
+  b.innerHTML = `<i class="pb-rule"></i>
+                 <div class="pb-text">
+                   <span class="pb-who">${U.escape(whoName||'')}</span>
+                   <span class="pb-name">${label}</span>
+                 </div>
+                 <i class="pb-rule"></i>`;
+  holdBanner(b, life);
+  return U.wait(420);
 }
 
 /* ---- 伤害 / 回复 ---- */
@@ -165,6 +204,6 @@ function dying(on){
 
 function aoe(){ screenFx('fx-aoe',820); }
 
-return {banner,turnBanner,damage,heal,loseHp,slash,dodge,beam,flyCard,drawTo,
+return {banner,turnBanner,phaseBanner,damage,heal,loseHp,slash,dodge,beam,flyCard,drawTo,
         judge,death,revealIdentity,dying,aoe,screenFx};
 })();

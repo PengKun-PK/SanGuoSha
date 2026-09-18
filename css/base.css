@@ -83,10 +83,6 @@ button:disabled{cursor:default}
 
 #centerZone{position:absolute;left:50%;top:56%;transform:translate(-50%,-50%);
   display:flex;align-items:center;gap:26px;pointer-events:none}
-.pile{display:flex;flex-direction:column;align-items:center;gap:6px}
-.pile-label{font-size:11px;color:#7d8c82;letter-spacing:.2em}
-.discard-slot{width:64px;height:93px;border:1px dashed rgba(232,200,106,.24);border-radius:7px;
-  display:flex;align-items:center;justify-content:center}
 #playZone{min-width:220px;min-height:96px;display:flex;gap:10px;align-items:center;justify-content:center}
 
 /* ---------- 战报 ---------- */

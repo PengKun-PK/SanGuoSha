@@ -315,12 +315,13 @@ function renderHand(g){
 function updateDeck(g){
   if(!g) g=G; if(!g) return;
   const e=U.$('deckCount'); if(e) e.textContent=g.deck.length;
+  const d=U.$('discardCount'); if(d) d.textContent=g.discard.length;
 }
+/* 角落的弃牌堆放不下一张牌，写出最后弃掉的那张就够了 */
 function setDiscardTop(card){
   const slot=U.$('discardSlot'); if(!slot||!card) return;
-  slot.innerHTML='';
-  const e=cardEl(card,'mini'); e.style.transform='scale(.92)';
-  slot.appendChild(e);
+  slot.textContent=cardTxt(card);
+  updateDeck();
 }
 
 /* ---------------- 出牌展示 ---------------- */

@@ -94,21 +94,20 @@
     <div class="war-standard standard-right"><i></i><span>魏</span></div>
     <div id="battleEmbers"></div>
   </div>
-  <div id="battleToolbar"><span id="actionStatus">等待出牌</span><label>对局速度 <select id="battleSpeed"><option value="1.5">慢速</option><option value="1" selected>标准</option><option value="0.55">快速</option></select></label></div>
+  <div id="battleToolbar">
+    <div id="pileDock">
+      <div id="deckPile" class="pd-item" title="牌堆剩余"><i class="pd-back"></i><b id="deckCount">0</b><span>牌堆</span></div>
+      <div id="discardPile" class="pd-item" title="弃牌堆"><i class="pd-slot"></i><b id="discardCount">0</b><span>弃牌</span><em id="discardSlot"></em></div>
+    </div>
+    <span id="actionStatus">等待出牌</span>
+    <label>对局速度 <select id="battleSpeed"><option value="1.5">慢速</option><option value="1" selected>标准</option><option value="0.55">快速</option></select></label>
+  </div>
   <div id="table">
     <div id="seatsArea"></div>
     <div id="actionStage" aria-live="polite" aria-atomic="true"></div>
 
     <div id="centerZone">
-      <div id="deckPile" class="pile">
-        <div class="card-back mini"><span id="deckCount">0</span></div>
-        <div class="pile-label">牌堆</div>
-      </div>
       <div id="playZone"></div>
-      <div id="discardPile" class="pile">
-        <div class="discard-slot" id="discardSlot"></div>
-        <div class="pile-label">弃牌堆</div>
-      </div>
     </div>
 
   </div>

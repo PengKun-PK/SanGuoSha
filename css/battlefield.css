@@ -37,9 +37,19 @@
 #handCards .card:hover{transform:translateY(-8px) scale(1.02)}
 #handCards .card.sel{transform:translateY(-24px) scale(1.06)}
 #centerZone{position:absolute;left:0;right:0;top:auto;bottom:12px;transform:none;display:block;height:78px;pointer-events:none}
-#deckPile,#discardPile{position:absolute;bottom:0;transform:scale(.72);transform-origin:bottom center;opacity:.8}
-#deckPile{left:28%}#discardPile{right:28%}
-#playZone{position:absolute;bottom:95px;left:50%;transform:translateX(-50%);max-width:80%;max-height:170px;min-height:0;min-width:0}
+#playZone{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);max-width:80%;max-height:170px;min-height:0;min-width:0}
+/* 牌堆与弃牌堆收进左上角工具条：牌桌中间留给出牌，这里只要看得到剩余张数。 */
+#pileDock{display:flex;align-items:center;gap:15px;flex-shrink:0}
+#actionStatus{flex:1;min-width:0;text-align:center}
+.pd-item{display:flex;align-items:center;gap:6px;line-height:1;white-space:nowrap}
+.pd-item i{width:17px;height:24px;border-radius:3px;flex-shrink:0}
+.pd-back{background:#102729 url('../assets/art/card-back.png') center/100% 100% no-repeat;border:1px solid #c0a46999;box-shadow:1.5px 1.5px 0 #0009,3px 3px 0 #00000052}
+.pd-slot{border:1px dashed #e8c86a4d;background:#0c111699}
+.pd-item b{font-size:1.15em;font-weight:700;color:#ffe2a3;min-width:1.5em;text-align:right}
+.pd-item>span{font-size:.82em;letter-spacing:.1em;color:#8d9a92}
+#discardSlot{font-style:normal;font-size:.85em;color:#bda882;max-width:130px;overflow:hidden;text-overflow:ellipsis}
+#discardSlot:empty{display:none}
+@media(max-width:1200px){#discardSlot{display:none}#pileDock{gap:11px}}
 #playZone:empty{display:none}
 .seat-box{box-shadow:0 8px 20px #000b,0 0 0 1px #c5b18a4d!important}.seat.turn .seat-box{box-shadow:0 0 0 2px #e6c075,0 0 22px #e6b65766!important}
 #actionStage{position:absolute;left:50%;top:57%;transform:translate(-50%,-50%);width:min(660px,72%);min-height:170px;pointer-events:none;z-index:20}

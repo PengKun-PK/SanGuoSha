@@ -676,6 +676,8 @@ class Game {
       if(this.over || !p.alive) break;
       this.phase = ph;
       UI.refresh(this);
+      await FX.phaseBanner(ph, p.name, {judges:p.judges.length});
+      if(this.over || !p.alive) break;
       await this.runPhase(p, ph);
     }
     this.phase='';
