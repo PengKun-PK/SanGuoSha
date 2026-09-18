@@ -52,8 +52,26 @@
 .skill-seal{position:relative;z-index:2;display:grid;place-items:center;width:65px;height:65px;border:2px solid var(--effect);transform:rotate(-9deg);font:34px KaiTi,serif;color:var(--effect);background:#72451940;border-radius:7px}
 .action-visual{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;opacity:.72}.action-visual i{position:absolute;display:block}
 .effect-slash{--effect:#ff8d64}.effect-dodge{--effect:#9fdcfa}.effect-heal{--effect:#9de4b4}.effect-wine{--effect:#ffc483}.effect-fire{--effect:#ff994f}.effect-thunder{--effect:#b9b1ff}.effect-arrows{--effect:#e9d3a1}.effect-invasion{--effect:#dc9476}.effect-chain{--effect:#a9cbe4}.effect-counter{--effect:#b4c2ff}.effect-dismantle{--effect:#e8ac80}.effect-steal{--effect:#89d3d4}.effect-draw{--effect:#ecd088}.effect-duel{--effect:#f89578}.effect-delay{--effect:#d7b0e9}.effect-equip{--effect:#d7c098}
-.effect-slash .action-visual i,.effect-duel .action-visual i{width:90%;height:5px;left:10%;top:45%;background:linear-gradient(90deg,transparent,#fff,var(--effect),transparent);box-shadow:0 0 20px var(--effect);transform:rotate(-28deg);animation:bladeSweep .65s ease-out both}
+.effect-duel .action-visual i{width:90%;height:5px;left:10%;top:45%;background:linear-gradient(90deg,transparent,#fff,var(--effect),transparent);box-shadow:0 0 20px var(--effect);transform:rotate(-28deg);animation:bladeSweep .65s ease-out both}
 .effect-duel .action-visual i:nth-child(2){transform:rotate(28deg);animation-delay:.18s}
+/* 杀：血迹飞溅。原先的斜向亮线与 .target-path 的指向箭头太像，会被误读成目标指向。
+   用细碎的血点而不是大色块，避免盖住动作台上的文字。 */
+.effect-slash .action-visual{opacity:.9}
+.effect-slash .action-visual i{--spin:calc(var(--i)*19deg - 14deg);
+  width:24px;height:24px;left:calc(7% + var(--i)*14%);top:calc(34% + var(--i)*14%);
+  border-radius:54% 46% 61% 39%/48% 57% 43% 52%;background:#cf1a10;
+  box-shadow:
+    36px -26px 0 -4px #e0281a, 66px 10px 0 2px #b81410, 102px -33px 0 -8px #a50f08,
+    132px 19px 0 -5px #d41b11, 163px -13px 0 -9px #9d0f08, 48px 43px 0 -7px #c2150e,
+    94px 50px 0 -9px #8c0c06, 188px 28px 0 -10px #b01209, 13px -40px 0 -8px #c4160f,
+    148px -47px 0 -10px #96100a, 75px -56px 0 -11px #d41b11;
+  filter:blur(.5px) drop-shadow(0 1px 5px #450603b0);
+  transform:rotate(var(--spin));
+  animation:bloodBurst .8s cubic-bezier(.12,.85,.3,1) both}
+/* 溅开后往下淌的一道 */
+.effect-slash .action-visual i::after{content:"";position:absolute;left:64px;top:18px;width:5px;height:20px;
+  border-radius:50% 50% 60% 40%/24% 24% 76% 76%;background:linear-gradient(180deg,#c4160f,#5f0905);
+  animation:bloodDrip .8s ease-in both}
 .effect-dodge .action-visual i,.effect-counter .action-visual i,.effect-heal .action-visual i,.effect-equip .action-visual i,.effect-delay .action-visual i{width:160px;height:160px;border:2px solid var(--effect);border-radius:50%;left:55%;top:10%;box-shadow:0 0 25px var(--effect);animation:effectRing 1.3s ease-out both}
 .action-visual i:nth-child(2){animation-delay:.18s!important}.action-visual i:nth-child(3){animation-delay:.35s!important}
 .effect-fire .action-visual i,.effect-wine .action-visual i{width:90px;height:200px;bottom:-75%;left:calc(28% + var(--i)*17%);background:radial-gradient(ellipse,#ffe6a4,#f9701999 35%,transparent 65%);filter:blur(4px);animation:flameBurst 1.4s ease-out both}
@@ -74,6 +92,10 @@
 @keyframes emberRise{10%{opacity:.8}80%{opacity:.35}100%{transform:translate(90px,-75vh) scale(.3);opacity:0}}
 @keyframes actionArrive{from{opacity:0;transform:translateY(12px) scale(.94)}to{opacity:1;transform:none}}
 @keyframes bladeSweep{from{clip-path:inset(0 100% 0 0);opacity:1}60%{opacity:1}to{clip-path:inset(0);opacity:.2}}
+@keyframes bloodBurst{0%{transform:scale(.25) rotate(var(--spin));opacity:0}18%{opacity:1}
+ 50%{transform:scale(1.05) rotate(calc(var(--spin) + 5deg));opacity:1}
+ 100%{transform:scale(1.2) rotate(calc(var(--spin) + 9deg));opacity:0}}
+@keyframes bloodDrip{0%,30%{transform:translateY(0) scaleY(.4);opacity:0}45%{opacity:1}100%{transform:translateY(15px) scaleY(1.25);opacity:0}}
 @keyframes effectRing{from{transform:scale(.2);opacity:1}to{transform:scale(1.7);opacity:0}}
 @keyframes flameBurst{25%{opacity:1}to{transform:translateY(-240px) scale(1.6);opacity:0}}
 @keyframes lightningStrike{0%,30%,60%{opacity:0}15%,45%{opacity:.9}100%{opacity:0}}
@@ -114,12 +136,12 @@
 #controlPanel{background:transparent;border:0;border-radius:0;box-shadow:none;padding:0 8px;max-height:180px;gap:8px;overflow:visible}
 #controlPanel #promptText{font-size:19px;line-height:1.5;max-height:58px;color:#fff1d4;text-shadow:0 2px 4px #000,0 0 10px #000;font-weight:500}
 #controlPanel .ctrl-btns{gap:14px}
-#controlPanel .ctrl-btns button{min-width:116px;min-height:54px;padding:10px 22px;font-size:23px;font-weight:700;letter-spacing:.08em;border:1px solid #d4b97c;border-radius:7px;color:#fff2cb;background:linear-gradient(#53452ef2,#30291ff2);box-shadow:0 3px 9px #0006;text-shadow:0 1px 2px #000}
-#controlPanel .ctrl-btns button:disabled{opacity:.5;color:#dfd5bd}
-#controlPanel .ctrl-btns button:not(:disabled):hover{background:linear-gradient(#94763d,#5d4827);border-color:#ffe4a1;transform:translateY(-2px)}
+#controlPanel :is(.ctrl-btns button,.skill-action){min-width:116px;min-height:54px;padding:10px 22px;font-size:23px;font-weight:700;letter-spacing:.08em;border:1px solid #d4b97c;border-radius:7px;color:#fff2cb;background:linear-gradient(#53452ef2,#30291ff2);box-shadow:0 3px 9px #0006;text-shadow:0 1px 2px #000}
+#controlPanel :is(.ctrl-btns button,.skill-action):disabled{opacity:.5;color:#dfd5bd}
+#controlPanel :is(.ctrl-btns button,.skill-action):not(:disabled):hover{background:linear-gradient(#94763d,#5d4827);border-color:#ffe4a1;transform:translateY(-2px)}
 #controlPanel #btnEnd{background:linear-gradient(#997431,#654a23)}
 #controlPanel #skillActions{max-height:64px;gap:8px}
-#controlPanel .skill-action{font-size:18px;padding:8px 13px;color:#fff1c7}
+
 #battleToolbar{font-size:19px}#logBody{font-size:18px;line-height:1.8}.log-turn,.log-head{font-size:18px}
 .seat{width:var(--seat-width,210px);transform:translateX(-50%)}
 .seat .seat-box{height:var(--seat-width,176px)}
@@ -175,14 +197,14 @@
  #selfGeneral .gcard{width:166px;height:226px}
  #controlPanel{max-height:160px;gap:5px}
  #controlPanel #promptText{font-size:18px;max-height:50px}
- #controlPanel .ctrl-btns button{min-height:48px;font-size:21px;padding:8px 18px}
+ #controlPanel :is(.ctrl-btns button,.skill-action){min-height:48px;font-size:21px;padding:8px 18px}
  #actionStage{top:67%}.action-name{font-size:32px}.action-source,.action-targets{font-size:19px}
  .action-card .card.mini{width:82px;height:119px}
 }
 @media(max-width:1100px){
  :root{--battle-log-width:0px}#logPanel{display:none}
  #selfGeneral{max-width:285px}#selfGeneral .self-side{width:100px}
- #controlPanel .ctrl-btns{gap:8px}#controlPanel .ctrl-btns button{min-width:96px;padding:9px 13px}
+ #controlPanel .ctrl-btns{gap:8px}#controlPanel :is(.ctrl-btns button,.skill-action){min-width:96px;padding:9px 13px}
 }
 @media(prefers-reduced-motion:reduce){.target-path{animation:none;opacity:.5}.target-path .path-core{animation:none;stroke-dasharray:none}.target-marker{box-shadow:none}}
 
@@ -246,6 +268,13 @@
 #selfGeneral .gc-sk{font-size:17px;line-height:1.25;padding:2px 5px}
 #selfGeneral .gcard>.self-id{top:4px;right:4px;padding:2px 6px}
 #selfGeneral .gc-portrait{background-position:center top}
+/* 阵亡表现：与 .seat.dead 一致的灰度立绘和「阵亡」水印 */
+#selfGeneral .gcard.dead{filter:grayscale(1) brightness(.5)}
+#selfGeneral.dead .self-side{filter:grayscale(1) brightness(.5)}
+#selfGeneral .gcard.dead::after{content:"阵亡";position:absolute;inset:0;z-index:6;
+  display:flex;align-items:center;justify-content:center;border-radius:9px;
+  font:700 30px/1 KaiTi,serif;color:#d9534f;letter-spacing:.3em;text-indent:.3em;
+  background:rgba(0,0,0,.52);text-shadow:0 0 12px #000;animation:none;transform:none}
 /* The narrow white control was a native scroll bar on the prompt region. */
 #promptText,.seat .s-skills,#selfGeneral .gc-skills{scrollbar-width:none}
 #promptText::-webkit-scrollbar,.seat .s-skills::-webkit-scrollbar,#selfGeneral .gc-skills::-webkit-scrollbar{display:none;width:0;height:0}
@@ -268,3 +297,51 @@
 #handArea{height:calc(var(--card-h) + 38px);min-height:calc(var(--card-h) + 38px);padding:28px 8px 4px;position:relative;overflow-x:auto;overflow-y:hidden}
 #handCards{height:calc(var(--card-h) + 6px);padding:0 4px 3px;overflow:visible}
 #handCards .card:hover,#handCards .card.sel{position:relative;z-index:12}
+
+/* Portrait and equipment occupy separate, non-shrinking rows at every size. */
+#selfGeneral{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;gap:7px;align-content:end;isolation:isolate}
+#selfGeneral .gcard{height:var(--seat-width,176px);min-height:var(--seat-width,176px);overflow:hidden}
+#selfGeneral .self-side{position:relative;min-width:0;width:100%;flex:none}
+.seat .s-equips,#selfGeneral .s-equips{gap:3px;margin-top:4px}
+.seat .equip-chip,#selfGeneral .equip-chip{height:42px;min-height:42px;border-radius:5px;background:linear-gradient(145deg,#1c272de8,#0d161ee8)}
+.equip-chip .eq-name{font-size:12px;line-height:1.35}
+.seat .equip-empty,#selfGeneral .equip-empty{font-size:11px;color:#adb8bf99;border-style:dashed;background:#0e192080}
+.equip-chip.usable{outline-offset:2px}.equip-chip.sel{border-color:#ffdb8c!important;background:#624d23!important}
+.judge-chips{min-width:0;flex-wrap:nowrap;gap:3px;overflow-x:auto;scrollbar-width:thin}
+.judge-chip{flex:none;white-space:nowrap;font-size:12px;padding:2px 4px}
+#controlPanel{width:min(620px,calc(100% - 2 * var(--seat-width,176px) - 40px));min-width:330px;border-radius:10px;padding:10px 16px;background:linear-gradient(120deg,#101a22b8,#10182066);border:1px solid #bda26933;box-shadow:0 4px 20px #0003}
+#selfGeneral .gc-skills,.seat .s-skills{top:29px;max-height:calc(var(--seat-width,176px) - 58px)}
+#selfGeneral .gc-sk,.seat .s-sk{font-size:clamp(13px,calc(var(--seat-width,176px) * .105),17px);line-height:1.2;padding:1px 3px;flex-shrink:0}
+#selfGeneral .gc-name,.seat .s-name{font-size:clamp(19px,calc(var(--seat-width,176px) * .14),25px)}
+#controlPanel :is(.ctrl-btns button,.skill-action){font-size:18px;min-height:44px;transition:background .15s,box-shadow .15s}
+#controlPanel :is(.ctrl-btns button,.skill-action):focus-visible,.skill-action:focus-visible{outline:2px solid #ffe0a1;outline-offset:3px}
+#promptText{color:#eee4d1}#logBody{font-size:15px;line-height:1.8;padding:12px 14px}
+.card.nature-fire{--element-color:#f49a62}.card.nature-thunder{--element-color:#b3a8ff}
+.card.nature-fire .cf-banner,.card.nature-thunder .cf-banner{color:var(--element-color);border-color:var(--element-color)}
+#handCards{width:max-content;flex:0 0 auto}
+.card .cf-banner{white-space:nowrap;max-height:none}
+.card:not(.mini) .cf-banner.n3{font-size:15px;letter-spacing:1px;padding:5px 2px}
+.card:not(.mini) .cf-banner.n4{font-size:13px;letter-spacing:0;padding:4px 2px}
+.card:not(.mini) .cf-banner.n5{font-size:11px;letter-spacing:0;padding:3px 2px}
+@media(max-height:780px){#controlPanel{padding:6px 10px}#controlPanel #promptText{font-size:16px;max-height:43px}#controlPanel :is(.ctrl-btns button,.skill-action){font-size:17px;min-height:40px;padding:7px 13px}#controlPanel #skillActions{max-height:36px}}
+@media(prefers-reduced-motion:reduce){#controlPanel :is(.ctrl-btns button,.skill-action){transition:none}}
+
+/* Skill actions share the command buttons; their row grows instead of scrolling. */
+#controlPanel{max-height:none}
+#controlPanel #skillActions{width:100%;height:auto;max-height:none;min-height:0;flex:0 0 auto;display:flex;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:8px;overflow:visible;padding:2px 0}
+#controlPanel #skillActions:empty{display:none}
+#controlPanel .skill-action{appearance:none;flex:0 0 auto;max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.35;cursor:pointer}
+#controlPanel .skill-action:disabled{cursor:default}
+
+/* Guanxing keeps both piles and confirmation in view, even after moving cards. */
+#modal.guanxing-modal{--guanxing-card-w:min(100px,calc((100vw - 112px) / var(--guanxing-count,5)),calc((100dvh - 240px) / 2.92))}
+#modal.guanxing-modal .modal-box{width:min(680px,calc(100vw - 24px));min-width:0;max-width:none;max-height:none;padding:16px 20px;overflow:visible}
+#modal.guanxing-modal .modal-title{margin-bottom:10px;font-size:clamp(21px,3vw,27px)}
+#modal.guanxing-modal .modal-body{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin-bottom:14px;line-height:1.4}
+.guanxing-hint{font-size:14px;color:#d5c6a6}
+.guanxing-label{font-size:16px}.guanxing-top{color:#9bdbad}.guanxing-bottom{color:#e8b18d}
+.guanxing-row{display:flex;flex-wrap:nowrap;align-items:flex-start;gap:6px;min-width:0;width:100%;height:calc(var(--guanxing-card-w) * 1.46 + 14px);padding:6px;border:1px dashed #94bda966;border-radius:7px;background:#0c17234d}
+.guanxing-row.guanxing-bottom{border-color:#c3937266}
+#modal.guanxing-modal .card.mini{flex:none;width:var(--guanxing-card-w);height:calc(var(--guanxing-card-w) * 1.46);margin:0;cursor:pointer}
+#modal.guanxing-modal .modal-foot button{min-height:44px;padding:8px 25px;font-size:18px}
+@media(max-height:550px){#modal.guanxing-modal .modal-box{padding:10px 16px}#modal.guanxing-modal .modal-title{font-size:21px;margin-bottom:6px}#modal.guanxing-modal .modal-body{gap:5px;margin-bottom:10px}}

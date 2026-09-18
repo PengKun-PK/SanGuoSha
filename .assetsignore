@@ -1,0 +1,11 @@
+node_modules/
+.git/
+.wrangler/
+tests/
+scripts/
+package.json
+package-lock.json
+wrangler.json
+wrangler.jsonc
+wrangler.toml
+README.md

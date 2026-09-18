@@ -1,0 +1,32 @@
+Built-in image_gen; original illustrations, 2026-09-18.
+fire-slash.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: armored Han dynasty warrior lunging with a flaming sword, sparks and burning camp
+Reference: assets/art/cards.png
+
+thunder-slash.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: armored Han dynasty warrior swinging a spear under branching violet-white lightning and storm clouds
+Reference: assets/art/cards.png
+
+guding-blade.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: single ancient straight broad dark steel Chinese dao with ornate bronze guard, resting diagonally on battle-worn wood
+Reference: assets/art/cards.png
+
+vermilion-fan.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: ornate red vermilion feather war fan with gilded phoenix handle, smoky military tent
+Reference: assets/art/cards.png
+
+silver-lion.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: silver lion-headed lamellar breastplate on wooden armor stand, intricate silver metal lion face
+Reference: assets/art/cards.png
+
+hualiu.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: majestic chestnut war horse with dark mane, ornate Han dynasty tack, misty military camp
+Reference: assets/art/cards.png
+
+fire-attack.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: ancient Chinese tactician watching enemy wooden warships burn fiercely at night
+Reference: assets/art/cards.png
+
+iron-chain.png
+Use case: historical-scene. Asset: square full-bleed original card illustration for a Three Kingdoms game. Match the reference atlas style: realistic painterly historical Chinese illustration, meticulous bronze and fabric textures, muted charcoal and warm sepia palette, dramatic natural lighting, cinematic composition, no lettering, no frame, no watermark. One single illustration, NOT a grid. Subject: massive iron chain linking ancient wooden warships on misty river, close foreground iron links
+Reference: assets/art/cards.png

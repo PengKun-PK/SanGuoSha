@@ -17,7 +17,21 @@ const EXPANSION_ROSTER = [
  ['sunce','孙策','wu',4,'m','山','jiang','hunzi','zhiba'],['erzhang','张昭张纮','wu',3,'m','山','zhijian','guzheng'],
  ['caiwenji','蔡文姬','qun',3,'f','山','beige','duanchang'],['zuoci','左慈','qun',3,'m','山','huashen','xinsheng'],
 ];
-DECK_LIST.push(['火攻','heart',[2,3]],['火攻','diamond',[12]],['铁索连环','club',[10,11,12,13]],['铁索连环','spade',[11,12]]);
+// 军争篇：每种花色 A–K 各一张，共 52 张，不与标准牌重复追加。
+const JUNZHENG_DECK = {
+ heart:['无懈可击','火攻','火攻','火杀','桃','桃','火杀','闪','闪','火杀','闪','闪','无懈可击'],
+ club:['白银狮子','藤甲','酒','兵粮寸断','雷杀','雷杀','雷杀','雷杀','酒','铁索连环','铁索连环','铁索连环','铁索连环'],
+ spade:['古锭刀','藤甲','酒','雷杀','雷杀','雷杀','雷杀','雷杀','酒','兵粮寸断','铁索连环','铁索连环','无懈可击'],
+ diamond:['朱雀羽扇','桃','桃','火杀','火杀','闪','闪','闪','酒','闪','闪','火攻','骅骝'],
+};
+for(const [name,nature,label] of [['火杀','fire','火焰'],['雷杀','thunder','雷电']])
+ CARD_INFO[name]={...CARD_INFO['杀'],nature,short:`对攻击范围内一名角色使用，造成1点${label}伤害。`,desc:`与普通杀共用出牌次数；目标须打出闪，否则受到1点${label}伤害。属性伤害可通过铁索连环传导。`};
+for(const [name,slot,range,desc] of [
+ ['古锭刀','weapon',2,'锁定技，你使用杀对没有手牌的目标造成伤害时，此伤害+1。'],
+ ['朱雀羽扇','weapon',4,'使用普通杀时，你可以将其改为火杀。'],
+ ['白银狮子','armor',0,'锁定技，你受到的伤害至多为1点；失去装备区里的此牌后，回复1点体力。'],
+ ['骅骝','horsePlus',0,'锁定技，其他角色计算与你的距离时+1。'],
+]) CARD_INFO[name]={ct:'equip',type:'equip',slot,range,tag:slot==='weapon'?'武器':slot==='armor'?'防具':'+1坐骑',short:desc,desc};
 for(const [id,name,k,hp,sex,pack,...skills] of EXPANSION_ROSTER){
  GENERALS[id]={name,k,hp,sex,pack,skills,lord:skills.some(s=>['huangtian','xueyi','songwei','baonue','ruoyu','zhiba'].includes(s)),art:{hue:{wei:218,shu:20,wu:145,qun:40}[k],beard:sex==='f'?0:1,hat:sex==='f'?'fa':'guan'}};
  if(GENERALS[id].lord) LORD_LIST.push(id);
@@ -73,7 +87,9 @@ Game.prototype.validPlay=function(p,a){
  if(c.virtual){const v=VIEW_AS.find(v=>v.id===c.viaSkill&&v.as===c.name&&v.count===rs.length&&(!v.extra||v.extra(this,p))&&rs.every(x=>v.filter(this,p,x)&&(v.area==='any'||p.hand.includes(x))));if(!v||(!v.equip&&!p.hasSkill(v.id))||(v.id==='luanji'&&rs[0].suit!==rs[1].suit))return false;}
  else if(!p.hand.includes(c))return false;
  const info=CARD_INFO[c.name];if(info.type==='equip'||info.tgt?.all)return true;
- const ts=a.targets||[];return new Set(ts).size===ts.length&&ts.length>=(info.tgt?.min||1)&&ts.length<=this.targetMax(p,c)&&ts.every(t=>this.canTarget(p,c,t));
+ const ts=a.targets||[];
+ if(c.name==='借刀杀人'&&(ts.length!==1||!this.borrowVictims(ts[0]).includes(a.opt?.extra)))return false;
+ return new Set(ts).size===ts.length&&ts.length>=(info.tgt?.min||1)&&ts.length<=this.targetMax(p,c)&&ts.every(t=>this.canTarget(p,c,t));
 };
 const baseCanSha=Game.prototype.canUseSha;
 Game.prototype.canUseSha=function(p){if(p.flags.tianyiLose)return false;if(p.flags.tianyiWin&&(p.flags.shaUsed||0)<2)return true;return baseCanSha.call(this,p);};
@@ -90,7 +106,7 @@ const baseRemove=Game.prototype.removeCard;
 Game.prototype.removeCard=function(p,c){c._game=this;c._playedSuit=c.suit;delete c._judgedBy;const area=baseRemove.call(this,p,c);if(area){this.lossQueue||=[];this.lossQueue.push({player:p,card:c,area});}return area;};
 Game.prototype.flushLoss=async function(){
  if(this.flushingLoss)return;this.flushingLoss=true;
- try{while(this.lossQueue?.length){const batch=this.lossQueue.splice(0);for(const p of new Set(batch.map(x=>x.player))){if(p.alive)await this.trigger('cardsLost',{player:p,losses:batch.filter(x=>x.player===p)});}}}finally{this.flushingLoss=false;}
+ try{while(this.lossQueue?.length){const batch=this.lossQueue.splice(0);for(const p of new Set(batch.map(x=>x.player))){if(p.alive){const losses=batch.filter(x=>x.player===p);for(const loss of losses)if(loss.area==='equip'&&loss.card.name==='白银狮子')await this.recover(p,1);await this.trigger('cardsLost',{player:p,losses});}}}}finally{this.flushingLoss=false;}
 };
 for(const name of ['gain','discardCards','useCard','requireCard','installEquip']){
  const base=Game.prototype[name];Game.prototype[name]=async function(...args){const r=await base.apply(this,args);await this.flushLoss();return r;};

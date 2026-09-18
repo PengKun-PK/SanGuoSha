@@ -62,8 +62,8 @@ async function present(g,user,card,targets,options={}){
  if(!stage())return;
  const token=++actionToken;clearTimeout(settleTimer);
  const ts=card?resolvedTargets(g,user,card,targets):targets||[];
- const name=options.skill||card.name;
- const effect=options.skill?'counter':effects[card.name]||(card.type==='equip'?'equip':'draw');
+ const name=options.skill||cardName(card);
+ const effect=options.skill?'counter':card.name==='杀'&&card.nature?card.nature:effects[card.name]||(card.type==='equip'?'equip':'draw');
  const root=U.el('div',`battle-action effect-${effect}${card?'':' skill-only'}`);
  const visual=U.el('div','action-visual');visual.setAttribute('aria-hidden','true');
  for(let i=0;i<3;i++){const part=U.el('i');part.style.setProperty('--i',i);visual.appendChild(part);}root.appendChild(visual);
@@ -94,6 +94,20 @@ FX.beam=(from,to,kind)=>{
 FX.banner=async(name,who)=>{const g=window.__game,p=g?.players.find(p=>p.name===who);if(p)await present(g,p,null,[],{skill:name});};
 UI.showPlay=async(g,user,card,targets,options)=>present(g,user,card,targets,options);
 UI.showJudgePending=async(g,p,card)=>present(g,p,card,[p],{judging:true});
+
+// 行动展示只属于当前回合。以前它会一直留在台面上，轮到下一个人出牌时仍显示
+// 上一个人的操作，容易被当成当前正在结算的牌。
+function clearStage(){
+ clearTimeout(settleTimer);actionToken++;
+ stage()?.replaceChildren();
+ wipeRoutes();
+ const status=U.$('actionStatus');if(status)status.textContent='';
+}
+FX.clearStage=clearStage;
+const playerTurn=Game.prototype.playerTurn;
+Game.prototype.playerTurn=async function(p){
+ try{return await playerTurn.call(this,p);}finally{clearStage();}
+};
 
 // Keep source/target context through nested responses and counterspells.
 const useCard=Game.prototype.useCard;

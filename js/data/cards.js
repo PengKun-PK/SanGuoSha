@@ -141,19 +141,16 @@ const SLOT_ICON = {weapon:'⚔',armor:'⛨',horseMinus:'➤',horsePlus:'⚑'};
 
 /* ---------- 牌堆构成 ---------- */
 const DECK_LIST = [
-  ['杀','spade',[2,3,7,8,8,9,9,10,10]],
-  ['杀','club',[2,3,4,5,6,7,8,8,9,9,10,10]],
+  ['杀','spade',[7,8,8,9,9,10,10]],
+  ['杀','club',[2,3,4,5,6,7,8,8,9,9,10,10,11,11]],
   ['杀','heart',[10,10,11]],
   ['杀','diamond',[6,7,8,9,10,13]],
   ['闪','heart',[2,2,13]],
   ['闪','diamond',[2,2,3,4,5,6,7,8,9,10,11,12]],
   ['桃','heart',[3,4,6,7,8,9,12]],
-  ['桃','diamond',[2]],
-  ['酒','spade',[3,9]],
-  ['酒','club',[3,9]],
-  ['无懈可击','spade',[11,13]],
-  ['无懈可击','club',[1,12,13]],
-  ['无懈可击','heart',[1]],
+  ['桃','diamond',[12]],
+  ['无懈可击','spade',[11]],
+  ['无懈可击','club',[12,13]],
   ['无懈可击','diamond',[12]],
   ['无中生有','heart',[7,8,9,11]],
   ['过河拆桥','spade',[3,4,12]],
@@ -175,9 +172,7 @@ const DECK_LIST = [
   ['乐不思蜀','spade',[6]],
   ['乐不思蜀','club',[6]],
   ['乐不思蜀','heart',[6]],
-  ['兵粮寸断','spade',[10]],
-  ['兵粮寸断','club',[4]],
-  ['诸葛连弩','spade',[1]],
+  ['诸葛连弩','diamond',[1]],
   ['诸葛连弩','club',[1]],
   ['雌雄双股剑','spade',[2]],
   ['青釭剑','spade',[6]],
@@ -190,7 +185,6 @@ const DECK_LIST = [
   ['八卦阵','spade',[2]],
   ['八卦阵','club',[2]],
   ['仁王盾','club',[2]],
-  ['藤甲','spade',[2]],
   ['赤兔','heart',[5]],
   ['大宛','spade',[13]],
   ['紫骍','diamond',[13]],
@@ -200,11 +194,15 @@ const DECK_LIST = [
 ];
 
 let _cardUid = 0;
+// 属性杀共用“杀”的响应、次数和技能规则，牌面保留属性名称。
+const cardName = c => c.name==='杀' && c.nature ? (c.nature==='fire'?'火杀':'雷杀') : c.name;
 function makeCard(name, suit, num){
+  const nature = name==='火杀'?'fire':name==='雷杀'?'thunder':null;
+  if(nature) name='杀';
   const info = CARD_INFO[name];
   return {
     uid: ++_cardUid,
-    name, suit, num,
+    name, suit, num, nature,
     ct: info.ct, type: info.type, slot: info.slot || null,
     range: info.range || 0,
     virtual:false, sub:null, viaSkill:null,
@@ -226,12 +224,14 @@ function makeVirtual(name, subCards, skillId){
 function buildDeck(){
   const deck=[];
   for(const [name,suit,nums] of DECK_LIST)
-    for(const n of nums) deck.push(makeCard(name,suit,n));
+    for(const n of nums) deck.push(Object.assign(makeCard(name,suit,n),{pack:'标准'}));
+  for(const [suit,names] of Object.entries(JUNZHENG_DECK))
+    names.forEach((name,i)=>deck.push(Object.assign(makeCard(name,suit,i+1),{pack:'军争'})));
   return U.shuffle(deck);
 }
 
 const isRed   = c => c.suit==='heart' || c.suit==='diamond' || (c.virtual && c.sub.length>1 && c.sub.every(isRed));
 const isBlack = c => c.suit==='spade' || c.suit==='club' || (c.virtual && c.sub.length>1 && c.sub.every(isBlack));
-const cardTxt = c => `${SUIT[c.suit]?SUIT[c.suit].sym:''}${c.num?NUM_TXT[c.num]:''}【${c.name}】`;
+const cardTxt = c => `${SUIT[c.suit]?SUIT[c.suit].sym:''}${c.num?NUM_TXT[c.num]:''}【${cardName(c)}】`;
 /* 一张虚拟/实体牌实际占用的实体牌 */
 const realCards = c => c.virtual ? c.sub : [c];

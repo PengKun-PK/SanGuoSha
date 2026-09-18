@@ -10,7 +10,9 @@ async function askAllies(g, p, kingdom, needName, skillId){
       {prompt:`<b>${p.name}</b> 发动【${skName}】，是否打出一张【${needName}】？`, allyCall:true, forWho:p,keepForCaller:true});
     if(c){
       g.log(`${g.nm(q)} 响应了 ${g.nm(p)} 的 ${g.sn(skillId)}。`);
-      return makeVirtual(needName, realCards(c), skillId);
+      const response=makeVirtual(needName, realCards(c), skillId);
+      if(needName==='杀')response.nature=c.nature||null;
+      return response;
     }
   }
   g.log(`无人响应 ${g.nm(p)} 的 ${g.sn(skillId)}。`);

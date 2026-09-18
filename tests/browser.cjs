@@ -63,10 +63,12 @@ const fs=require('node:fs');
   await page.setViewportSize({width:1280,height:800});
   await page.screenshot({path:'tests/artifacts/battle-1280.png',animations:'disabled'});
   const result=await page.evaluate(async()=>{
+    let seed=12837;Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
     U.wait=U.hardWait=async()=>{};
     for(const name of Object.keys(FX))FX[name]=async()=>{};
     UI.showPlay=async()=>{};
-    UI.request=async(g,p,req)=>req.kind==='play'?AI.playTurn(g,p):AI.decide(g,p,req);
+    let uiRequests=0;
+    UI.request=async(g,p,req)=>{if(++uiRequests>4000)throw new Error('Browser simulation exceeded UI request budget');return req.kind==='play'?AI.playTurn(g,p):AI.decide(g,p,req);};
     const g=new Game({count:8,aiThink:0});
     const ids=['guanyu','zuoci','caiwenji','jiaxu','sunce','dengai','lusu','zhoutai'];
     const roles=['zhu','fan','zhong','fan','zhong','fan','fan','nei'];

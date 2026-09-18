@@ -313,7 +313,9 @@ class Game {
     await this.trigger('damageBefore', ctx);
     if(ctx.cancelled || ctx.n<=0) return;
     /* 藤甲：火焰伤害+1 */
-    if(t.equips.armor && t.equips.armor.name==='藤甲' && ctx.nature==='fire') ctx.n++;
+    const ignoreArmor=ctx.isSha&&!ctx.chain&&ctx.source?.equips.weapon?.name==='青釭剑';
+    if(!ignoreArmor&&t.equips.armor?.name==='藤甲'&&ctx.nature==='fire') ctx.n++;
+    if(!ignoreArmor&&t.equips.armor?.name==='白银狮子') ctx.n=Math.min(ctx.n,1);
     ctx.applied=true;
     ctx.sourceDistance=ctx.source?this.distance(ctx.source,t):99;
     t.hp -= ctx.n;
@@ -456,6 +458,9 @@ class Game {
   legalTargets(user, card, chosen){
     return this.alivePlayers().filter(t=>this.canTarget(user,card,t,chosen));
   }
+  borrowVictims(holder){
+    return holder?.alive&&holder.equips.weapon?this.alivePlayers().filter(q=>q!==holder&&this.inAttackRange(holder,q)):[];
+  }
   /* 这张牌此刻能否使用（出牌阶段） */
   canUseInPlay(user, card){
     const info=CARD_INFO[card.name]; if(!info) return false;
@@ -473,6 +478,13 @@ class Game {
 
   async useCard(user, card, targets, opt={}){
     opt = opt||{};
+    if(card.name==='杀'&&!card.nature&&user.equips.weapon?.name==='朱雀羽扇'){
+      const yes=await this.ask(user,{kind:'confirm',tag:'zhuque',card,targets,prompt:'【朱雀羽扇】：是否将此普通杀改为火杀？'});
+      if(yes){
+        // A temporary use wrapper keeps the physical card unchanged after resolution.
+        card={...card,nature:'fire',virtual:true,sub:realCards(card)};
+      }
+    }
     if(card.name==='杀'){ opt={...opt,drank:!!user.flags.jiuBuff}; user.flags.jiuBuff=false; }
     const info = CARD_INFO[card.name];
     const reals = realCards(card);
@@ -489,7 +501,7 @@ class Game {
     else
       this.log(`${this.nm(user)} 使用 ${this.cn(card)}${targets&&targets.length?'，目标：'+targets.map(t=>this.nm(t)).join('、'):''}。`, true);
 
-    await UI.showPlay(this, user, card, targets);
+    await UI.showPlay(this, user, card, targets, {extra:opt.extra});
 
     /* AI 阵营推理：记录这次行动 */
     if(targets && targets.length){
@@ -498,10 +510,7 @@ class Game {
     }
     if(opt.extra) AI.observe(this, user, opt.extra, true);
 
-    /* 指向线 */
-    if(targets) for(const t of targets)
-      if(t!==user) FX.beam(UI.elOf(user), UI.elOf(t),
-        ['桃','桃园结义','五谷丰登','无中生有'].includes(card.name)?'friendly':'hostile');
+    /* 指向线由展示层按本次用牌统一绘制，避免逐目标覆盖或响应反向。 */
 
     /* 使用次数统计 */
     if(card.name==='杀' && !opt.rescue && this.phase==='play' && user===this.curPlayer){
@@ -556,6 +565,7 @@ class Game {
   async installEquip(p, card){
     const slot = card.slot;
     const old = p.equips[slot];
+    if(old) this.removeCard(p,old);
     p.equips[slot] = card;
     const i=this.processing.indexOf(card); if(i>=0) this.processing.splice(i,1);
     this.log(`${this.nm(p)} 装备了 ${this.cn(card)}。`);
@@ -793,7 +803,7 @@ const CardEffect = {
     await g.trigger('shaTarget', stx);
     if(stx.cancelled) return;
     if(stx.transferTo && stx.transferTo.alive){
-      FX.beam(UI.elOf(stx.target), UI.elOf(stx.transferTo), 'hostile');
+      FX.beam(UI.elOf(user), UI.elOf(stx.transferTo), 'hostile');
       return await CardEffect['杀'](g, {user, card, target:stx.transferTo, opt});
     }
     const target = stx.target;
@@ -865,6 +875,7 @@ const CardEffect = {
     let n = 1;
     if(user.flags.luoyiBuff) n++;
     if(opt.drank){ n++; g.log(`【酒】使这张【杀】伤害+1。`); }
+    if(user.equips.weapon?.name==='古锭刀'&&!target.hand.length){n++;g.log('【古锭刀】使对无手牌目标的伤害+1。');}
     const dctx = {source:user, target, n, nature:card.nature||null, card, isSha:true};
     /* 寒冰剑 */
     if(user.equips.weapon && user.equips.weapon.name==='寒冰剑' && target.cardCount>=1){
@@ -940,7 +951,7 @@ const CardEffect = {
   async '借刀杀人'(g,{user,card,target,opt}){
     const victim = opt.extra;
     if(!target.equips.weapon) return;
-    if(!victim || !victim.alive || !g.inAttackRange(target,victim)){
+    if(!g.borrowVictims(target).includes(victim)){
       g.log(`【借刀杀人】没有合法目标，无事发生。`); return;
     }
     const c = await g.ask(target,{kind:'respond', need:'杀', cancelable:true,

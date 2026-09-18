@@ -299,6 +299,11 @@ async function decide(g,p,req){
   }
 
   case 'confirm':{
+    if(req.tag==='zhuque'){
+      const targets=req.targets||[];
+      return !targets.some(t=>t.marks.linked)&&targets.length>0 ||
+        g.alivePlayers().filter(t=>t.marks.linked).reduce((s,t)=>s-attitude(g,p,t),0)>0;
+    }
     if(req.skill) return wantSkill(g,p,req.skill,req.ctx||{});
     const t=req.prompt||'';
     if(t.includes('颂威')||t.includes('暴虐')){const lord=g.lord();return isFriend(g,p,lord);}
@@ -610,11 +615,19 @@ async function playTurn(g,p){
   return {type:'end'};
 }
 
-function shaImmune(p,t,c){if(p.equips.weapon?.name==='青釭剑')return false;return t.equips.armor?.name==='藤甲'&&!c.nature || t.equips.armor?.name==='仁王盾'&&isBlack(c);}
+function shaImmune(p,t,c){if(p.equips.weapon?.name==='青釭剑')return false;return t.equips.armor?.name==='藤甲'&&!c.nature&&p.equips.weapon?.name!=='朱雀羽扇' || t.equips.armor?.name==='仁王盾'&&isBlack(c);}
 
 function pickSha(g,p){
   const real = p.hand.filter(c=>c.name==='杀');
-  if(real.length) return bestForUse(g,p,real,'杀');
+  if(real.length){
+    const score=c=>Math.max(-100,...g.legalTargets(p,c).filter(t=>!shaImmune(p,t,c)).map(t=>{
+      let value=-attitude(g,p,t);
+      if(c.nature==='fire'&&t.equips.armor?.name==='藤甲')value+=20;
+      if(c.nature&&t.marks.linked)value+=g.alivePlayers().filter(q=>q!==t&&q.marks.linked).reduce((n,q)=>n-attitude(g,p,q)*.5,0);
+      return value;
+    }));
+    return real.slice().sort((a,b)=>score(b)-score(a))[0];
+  }
   const opts = Skills.options(g,p,'杀').filter(o=>o.kind==='view');
   if(!opts.length) return null;
   let best=null,bc=1e9;

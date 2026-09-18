@@ -12,6 +12,39 @@ function engine(seed=12837){
  return a;
 }
 test('57 generals; all 32 expansion generals have executable skill registrations',()=>{const a=engine();assert.equal(Object.keys(a.GENERALS).length,57);for(const pack of ['风','火','林','山'])assert.equal(Object.values(a.GENERALS).filter(x=>x.pack===pack).length,8);for(const gen of Object.values(a.GENERALS))for(const id of gen.skills){assert.ok(a.SKILLS[id],id);assert.ok(a.SKILL_TEXT[id]?.[1],id);assert.ok(a.SKILLS[id].run||a.SKILLS[id].passive||a.SKILLS[id].event==='_viewas',id);}});
+
+test('160-card deck includes a complete 52-card military expansion',()=>{
+ const a=engine(),g=a.game(),cards=g.deck.filter(c=>c.pack==='军争');
+ assert.equal(g.deck.length,160);assert.equal(cards.length,52);
+ for(const suit of ['spade','heart','club','diamond'])assert.deepEqual(Array.from(cards.filter(c=>c.printedSuit===suit),c=>c.num).sort((a,b)=>a-b),Array.from({length:13},(_,i)=>i+1));
+ assert.equal(cards.filter(c=>c.nature==='fire').length,5);assert.equal(cards.filter(c=>c.nature==='thunder').length,9);
+});
+test('elemental slash responds as slash, uses the same limit and interacts with vine',async()=>{
+ for(const [name,damage] of [['火杀',2],['雷杀',1]]){
+  const a=engine(),g=a.game(['zhangfei','zhaoyun','guanyu']),[p,t]=g.players;p.skills=[];t.skills=[];
+  const c=a.makeCard(name,'heart',4);p.hand=[c];t.hand=[];t.equips.armor=a.makeCard('藤甲','club',2);
+  assert.ok(a.Skills.canProvide(g,p,'杀'));await g.useCard(p,c,[t]);
+  assert.equal(t.hp,t.maxHp-damage);assert.equal(p.flags.shaUsed,1);assert.equal(g.canUseInPlay(p,a.makeCard('杀','spade',7)),false);
+ }
+});
+test('Guding bonus, Silver Lion cap, Qinggang bypass and lion equipment loss',async()=>{
+ const a=engine(),g=a.game(['zhangfei','zhaoyun','guanyu']),[p,t]=g.players;p.skills=[];t.skills=[];
+ p.equips.weapon=a.makeCard('古锭刀','spade',1);t.hand=[];t.equips.armor=a.makeCard('白银狮子','club',1);
+ await a.CardEffect['杀'](g,{user:p,target:t,card:a.makeCard('杀','heart',10),opt:{drank:true}});assert.equal(t.hp,t.maxHp-1);
+ p.equips.weapon=a.makeCard('青釭剑','spade',6);
+ await a.CardEffect['杀'](g,{user:p,target:t,card:a.makeCard('杀','heart',10),opt:{drank:true}});assert.equal(t.hp,t.maxHp-3);
+ await g.installEquip(t,a.makeCard('藤甲','club',2));assert.equal(t.hp,t.maxHp-2);
+ await g.installEquip(t,a.makeCard('白银狮子','club',1));await g.gain(p,[t.equips.armor],t);assert.equal(t.hp,t.maxHp-1);
+ t.equips.armor=null;t.hp=t.maxHp;p.equips.weapon=a.makeCard('古锭刀','spade',1);
+ await a.CardEffect['杀'](g,{user:p,target:t,card:a.makeCard('杀','heart',10),opt:{}});assert.equal(t.hp,t.maxHp-2);
+});
+test('Vermilion Fan changes only the current slash and Hualiu increases distance',async()=>{
+ const a=engine(),g=a.game(['zhangfei','zhaoyun','guanyu']),[p,t]=g.players;p.skills=[];t.skills=[];
+ p.equips.weapon=a.makeCard('朱雀羽扇','diamond',1);t.equips.armor=a.makeCard('藤甲','club',2);
+ const c=a.makeCard('杀','heart',10);p.hand=[c];g.ask=async(_,req)=>req.tag==='zhuque'?true:null;
+ await g.useCard(p,c,[t]);assert.equal(t.hp,t.maxHp-2);assert.equal(c.nature,null);assert.ok(g.discard.includes(c));assert.equal(g.processing.length,0);
+ const distance=g.distance(p,t);t.equips.horsePlus=a.makeCard('骅骝','diamond',13);assert.equal(g.distance(p,t),distance+1);
+});
 test('view-as, active availability, legal targets, duplicate cards and halberd limits',()=>{const a=engine(),g=a.game(['guanyu','zhangfei','zhaoyun']);const p=g.players[0],t=g.players[1];const c=a.makeCard('闪','heart',2);p.hand=[c];const v=a.makeVirtual('杀',[c],'wusheng');assert.ok(g.validPlay(p,{card:v,targets:[t]}));p.flags.shaUsed=1;assert.ok(!g.validPlay(p,{card:v,targets:[t]}));p.flags={};p.equips.weapon=a.makeCard('方天画戟','diamond',12);assert.equal(g.targetMax(p,v),3);const fake=a.makeVirtual('杀',[c,c],'zhangba');assert.ok(!g.validPlay(p,{card:fake,targets:[t]}));});
 test('guose needs diamond and allows equipment; zhangba needs two hand cards',()=>{const a=engine(),g=a.game(['daqiao','zhangfei']);const p=g.players[0];p.hand=[a.makeCard('桃','heart',4)];assert.equal(a.Skills.options(g,p,'乐不思蜀').length,0);p.equips.horseMinus=a.makeCard('赤兔','diamond',5);assert.equal(a.Skills.options(g,p,'乐不思蜀').length,1);p.equips.weapon=a.makeCard('丈八蛇矛','spade',12);assert.equal(a.Skills.options(g,p,'杀').length,0);p.hand.push(a.makeCard('闪','diamond',9));assert.equal(a.Skills.options(g,p,'杀').length,1);});
 test('Luoshen black judgement remains available to collect',async()=>{const a=engine(),g=a.game(['zhenji','zhangfei']);const p=g.players[0];p.skills=['luoshen'];g.deck=[a.makeCard('桃','heart',4),a.makeCard('杀','club',7)];await a.SKILLS.luoshen.run(g,p);assert.equal(p.hand.length,1);assert.equal(p.hand[0].suit,'club');assert.equal(g.discard.length,1);assert.equal(g.processing.length,0);});

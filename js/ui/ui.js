@@ -11,24 +11,26 @@ let selfCardEl = null;
 const nameLenCls = name => name.length>=5 ? ' n5' : (name.length===4 ? ' n4' : '');
 
 function cardEl(card, extra){
-  const info = CARD_INFO[card.name] || {ct:'basic',tag:''};
+  const name=cardName(card);
+  const info = CARD_INFO[name] || {ct:'basic',tag:''};
   const d = U.el('div','card t-'+info.ct+(extra?' '+extra:''));
   const sc = SUIT[card.suit];
-  const n = card.name.length;
+  const n = name.length;
   const lenCls = n>=5 ? ' n5' : (n===4 ? ' n4' : (n===3 ? ' n3' : ''));
   const badge = sc ? `<div class="cf-badge ${sc.color}">
       <span class="cf-num">${NUM_TXT[card.num]||''}</span>
       <span class="cf-suit">${sc.sym}</span></div>` : '';
   d.innerHTML = `
-    <div class="cf-art">${Art.cardArt(card.name)}</div>
+    <div class="cf-art">${Art.cardArt(name)}</div>
     <div class="cf-shade"></div>
     ${badge}
     <div class="cf-tag">${info.tag||''}</div>
-    <div class="cf-banner${lenCls}">${card.name}</div>
+    <div class="cf-banner${lenCls}">${name}</div>
     <div class="cf-desc">${info.short||info.desc||''}</div>`;
-  d.title = [card.name, info.desc].filter(Boolean).join(String.fromCharCode(10));
+  d.title = [name, info.desc,card.pack?`${card.pack}篇`:''].filter(Boolean).join(String.fromCharCode(10));
+  if(card.nature) d.classList.add('nature-'+card.nature);
   if(card.virtual) d.classList.add('is-virtual');
-  Art.bindImage(d.querySelector('.cf-art'),'cards',card.name);
+  Art.bindImage(d.querySelector('.cf-art'),'cards',name);
   d._card = card;
   return d;
 }
@@ -136,7 +138,11 @@ function layoutSeats(){
   const area=U.$('seatsArea'),bounds=area.getBoundingClientRect();
   if(!bounds.width||!bounds.height)return;
   const others=[...seatEls.keys()],k=others.length,topCount=k>3?k-2:k;
-  const width=Math.min(SEAT_MAX_W,(bounds.width-32)/Math.max(topCount,1)-12);
+  // Reserve three vertical bands (upper seats, wings, own general), including
+  // equipment and judgement rows. Previously the wings were pushed into self.
+  const judgeHeight=Math.max(0,...[...seatEls.values(),U.$('selfGeneral')].map(el=>el.querySelector('.judge-chips')?.offsetHeight||0));
+  const heightBudget=(innerHeight-bounds.top-32-12-48-3*(48+judgeHeight))/3;
+  const width=Math.max(96,Math.min(SEAT_MAX_W,(bounds.width-32)/Math.max(topCount,1)-12,k>3?heightBudget:SEAT_MAX_W));
   setSeatWidth(area, width);
   U.$('selfGeneral').style.width=width+'px';
   U.$('actionStage').style.setProperty('--action-width',Math.max(220,bounds.width-2*width-80)+'px');
@@ -181,7 +187,7 @@ function equipChips(container, p){
   container.innerHTML='';
   for(const slot of slots){
     const c = p.equips[slot];
-    if(!c){const empty=U.el('div','equip-chip equip-empty');empty.dataset.slot=slot;empty.title=labels[slot]+'槽（未装备）';empty.setAttribute('aria-label',empty.title);container.appendChild(empty);continue;}
+    if(!c){const empty=U.el('div','equip-chip equip-empty',labels[slot]);empty.dataset.slot=slot;empty.title=labels[slot]+'槽（未装备）';empty.setAttribute('aria-label',empty.title);container.appendChild(empty);continue;}
     const cls = slot==='weapon'?'w':slot==='armor'?'a':'h';
     const chip = U.el('div','equip-chip '+cls);
     chip.dataset.slot=slot;
@@ -238,6 +244,8 @@ function refresh(g){
   if(selfCardEl){
     hpBeads(selfCardEl.querySelector('.gc-hp'), h);
     selfCardEl.classList.toggle('dead', !h.alive);
+    /* 装备/判定区在武将牌之外，阵亡时一并置灰 */
+    U.$('selfGeneral').classList.toggle('dead', !h.alive);
     renderState(selfCardEl,h);
     const sk = selfCardEl.querySelector('.gc-skills');
     const usableSet = h.skills.filter(id=>{
@@ -366,6 +374,7 @@ function setBtns(ok,cancel,end){
   U.$('btnOk').textContent=P?.req.kind==='play'?'出牌':'确定';
 }
 function clearTargets(){
+  document.querySelectorAll('.borrow-role').forEach(el=>el.remove());
   for(const [p,el] of seatEls) el.classList.remove('targetable','chosen');
   if(selfCardEl) selfCardEl.classList.remove('targetable','chosen');
 }
@@ -603,7 +612,7 @@ function playsForSelection(){
 
 async function updatePlaySelection(){
   const {g,p}=P;
-  P.targets=[]; P.play=null; clearTargets();
+  P.targets=[]; P.borrowVictim=null; P.play=null; clearTargets();
   const plays = playsForSelection();
   if(!plays.length){
     setPrompt(P.sel.length?`<b>当前选择无法使用</b><br>再次点击可取消选择。`:`<b>你的出牌阶段</b><br>选择手牌使用，或点击武将技能。`);
@@ -621,6 +630,7 @@ async function updatePlaySelection(){
   }
   if(!P) return;
   P.play = chosen.card;
+  if(P.play.name==='借刀杀人'){renderBorrowSelection();return;}
   const info = CARD_INFO[chosen.card.name];
   if(info.type==='equip' || (info.tgt && info.tgt.all)){
     setPrompt(`将使用 <b>【${chosen.card.name}】</b>${info.tgt&&info.tgt.all?'（所有目标）':''}<br>点击「确定」执行。`);
@@ -643,6 +653,22 @@ async function updatePlaySelection(){
 }
 
 /* ---- 点击座位 ---- */
+function renderBorrowSelection(){
+  const {g,p,play}=P,holder=P.targets[0];
+  clearTargets();
+  if(!holder){
+    highlightTargets(q=>g.canTarget(p,play,q)&&g.borrowVictims(q).length>0);
+    setPrompt('<b>借刀杀人 · ① 选择持刀者</b><br>点击一名装备武器的其他武将。');
+  }else{
+    highlightTargets(q=>g.borrowVictims(holder).includes(q));
+    elOf(holder).classList.add('chosen');
+    const mark=(q,text)=>{const host=q.isHuman?U.$('selfGeneral'):elOf(q);host.appendChild(U.el('span','borrow-role',text));};
+    mark(holder,'① 持刀者');
+    if(P.borrowVictim){elOf(P.borrowVictim).classList.add('chosen');mark(P.borrowVictim,'② 被杀者');}
+    setPrompt(P.borrowVictim?`<b>${U.escape(holder.name)} → ${U.escape(P.borrowVictim.name)}</b><br>点击「出牌」确认；再点已选武将可重选。`:`<b>借刀杀人 · ② 选择被杀者</b><br>已选 ${U.escape(holder.name)}，请选择其攻击范围内的武将。`);
+  }
+  setBtns(!!holder&&!!P.borrowVictim,true,true);
+}
 function onSeatClick(q){
   if(!P || !q.alive || !U.$('modal').classList.contains('hidden')) return;
   const {g,p,req}=P;
@@ -650,6 +676,12 @@ function onSeatClick(q){
   if(!el.classList.contains('targetable') && !P.targets.includes(q)) return;
 
   if(req.kind==='play'){
+    if(P.play?.name==='借刀杀人'){
+      if(!P.targets.length)P.targets=[q];
+      else if(P.targets[0]===q){P.targets=[];P.borrowVictim=null;}
+      else P.borrowVictim=P.borrowVictim===q?null:q;
+      renderBorrowSelection();return;
+    }
     const info=CARD_INFO[P.play.name];
     const max=g.targetMax(p,P.play);
     const i=P.targets.indexOf(q);
@@ -685,12 +717,8 @@ async function onOk(){
     let opt={};
     if(card.name==='借刀杀人'){
       const holder=P.targets[0];
-      const vics=g.alivePlayers().filter(q=>q!==holder && g.inAttackRange(holder,q));
-      if(!vics.length){ setPrompt('该角色攻击范围内没有其他角色，换一个目标。'); return; }
-      const v=await modal({title:'借刀杀人：指定被杀的角色',
-        buttons:vics.map((q,i)=>({label:q.name+`（${q.hp}血）`,value:i})).concat([{label:'取消',value:-1}])});
-      if(v===-1||v==null) return;
-      opt.extra=vics[v];
+      if(!holder||!g.canTarget(p,card,holder)||!g.borrowVictims(holder).includes(P.borrowVictim)){P.targets=[];P.borrowVictim=null;renderBorrowSelection();return;}
+      opt.extra=P.borrowVictim;
     }
     finish({type:'use', card, targets:P.targets.slice(), opt});
   }else if(req.kind==='respond'){
@@ -726,26 +754,29 @@ function pickAreaModal(g,p,req){
 function guanxingModal(g,p,req){
   return new Promise(resolve=>{
     const m=U.$('modal');
+    m.classList.add('guanxing-modal');
+    m.style.setProperty('--guanxing-count',Math.max(1,req.cards.length));
     U.$('modalTitle').textContent='观星 · 安排牌堆';
     const b=U.$('modalBody'); b.innerHTML='';
-    b.style.flexDirection='column';
     const top=[], bottom=[], pool=req.cards.slice();
-    const info=U.el('div',null,'<div style="font-size:13px;color:#b5a582;margin-bottom:10px">点击牌切换 <b style="color:#6ede8a">牌堆顶</b> / <b style="color:#ef8f74">牌堆底</b>。牌堆顶从左到右先被摸到。</div>');
-    const rowT=U.el('div'); rowT.style.cssText='display:flex;gap:8px;min-height:92px;padding:6px;border:1px dashed rgba(110,222,138,.4);border-radius:6px;width:100%;flex-wrap:wrap';
-    const rowB=U.el('div'); rowB.style.cssText='display:flex;gap:8px;min-height:92px;padding:6px;border:1px dashed rgba(239,143,116,.4);border-radius:6px;width:100%;margin-top:10px;flex-wrap:wrap';
-    const lblT=U.el('div',null,'<span style="font-size:12px;color:#6ede8a">牌堆顶</span>');
-    const lblB=U.el('div',null,'<span style="font-size:12px;color:#ef8f74">牌堆底</span>');
+    const info=U.el('div','guanxing-hint','点击卡牌切换牌堆顶 / 牌堆底。牌堆顶从左到右依次摸取。');
+    const rowT=U.el('div','guanxing-row guanxing-top');
+    const rowB=U.el('div','guanxing-row guanxing-bottom');
+    const lblT=U.el('div','guanxing-label guanxing-top');
+    const lblB=U.el('div','guanxing-label guanxing-bottom');
     b.appendChild(info); b.appendChild(lblT); b.appendChild(rowT); b.appendChild(lblB); b.appendChild(rowB);
     pool.forEach(c=>top.push(c));
     function draw(){
       rowT.innerHTML=''; rowB.innerHTML='';
+      lblT.textContent=`牌堆顶 · ${top.length} 张`;
+      lblB.textContent=`牌堆底 · ${bottom.length} 张`;
       top.forEach(c=>{ const e=cardEl(c,'mini'); e.onclick=()=>{ top.splice(top.indexOf(c),1); bottom.push(c); draw(); }; rowT.appendChild(e); });
       bottom.forEach(c=>{ const e=cardEl(c,'mini'); e.onclick=()=>{ bottom.splice(bottom.indexOf(c),1); top.push(c); draw(); }; rowB.appendChild(e); });
     }
     draw();
     const f=U.$('modalFoot'); f.innerHTML='';
     const ok=U.el('button',null,'确定');
-    ok.onclick=()=>{ m.classList.add('hidden'); b.style.flexDirection=''; resolve({top:top.slice(), bottom:bottom.slice()}); };
+    ok.onclick=()=>{ m.classList.add('hidden'); m.classList.remove('guanxing-modal'); m.style.removeProperty('--guanxing-count'); resolve({top:top.slice(), bottom:bottom.slice()}); };
     f.appendChild(ok);
     m.classList.remove('hidden');
   });
