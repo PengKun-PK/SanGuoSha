@@ -147,6 +147,7 @@
 .gcard .gc-sk.used{opacity:.4}
 
 .k-wei{--kc:var(--wei)} .k-shu{--kc:var(--shu)} .k-wu{--kc:var(--wu)} .k-qun{--kc:var(--qun)}
+.k-god{--kc:#d8ad40}
 
 /* 血珠 */
 .hp-bead{width:11px;height:11px;border-radius:50%;

@@ -14,6 +14,9 @@ npm start
 
 ## 本次更新
 
+- 接入用户指定的一将成名 2011—2015 共 55 位及八神将，华雄复用已有角色。现在共有 119 位武将，118 位可选（于吉仍停用）。扩展包筛选、技能搜索、主动／转化技能、AI 和专属标记已接入；新增角色暂用程序绘制头像。
+- 技能版本、名单归属与验证范围见 [扩展规则说明](docs/expansion-rules.md)。
+
 - 默认牌堆补全为标准＋EX 108 张与军争 52 张，共 160 张。加入火杀、雷杀、古锭刀、朱雀羽扇、白银狮子、骅骝，补齐酒、闪、桃、藤甲等数量；支持属性伤害、装备结算与 AI 使用。
 - 新增 8 张独立古风写实插图，素材在 `assets/art/`，内置 image_gen 的完整提示词保存在 `assets/art/junzheng.prompts.txt`。
 - 左侧武将与装备采用独立布局行，八人局按可用高度预留装备及判定区；优化操作区、空装备槽、长卡名和手牌横向滚动。
@@ -43,7 +46,7 @@ npm start
 | 林 | 曹丕、徐晃、孟获、祝融、孙坚、鲁肃、董卓、贾诩 |
 | 山 | 张郃、邓艾、姜维、刘禅、孙策、张昭张纮、蔡文姬、左慈 |
 
-采用经典身份局技能方向，不混用界限突破、国战或移动版改写技能；本次不包含各包附带的神武将。加入火攻、铁索连环以支持火计、连环和属性伤害传导。
+采用经典身份局技能方向，不混用界限突破或国战技能。现已包含风火林山八神将、一将成名五个自定义名单包；版本选择见扩展规则说明。加入火攻、铁索连环以支持火计、连环和属性伤害传导。
 
 规则核对参考：[规则集·魏](https://gltjk.com/sanguosha/rules/card/hero/wei.html)、[蜀](https://gltjk.com/sanguosha/rules/card/hero/shu.html)、[吴](https://gltjk.com/sanguosha/rules/card/hero/wu.html)、[群](https://gltjk.com/sanguosha/rules/card/hero/neutral.html)。技能实际说明见选将页及 `js/core/expansion.js`。AI 使用公开场面和自己的手牌做启发式决策，不读取对手手牌决定进攻。
 
@@ -56,6 +59,7 @@ npm install
 npm run test:browser
 node tests/battle-ui.cjs
 node tests/junzheng-ui.cjs
+node tests/yijiang-ui.cjs
 ```
 
 引擎测试涵盖技能注册、核心规则回归、武将联动、自动对局以及实体牌数量守恒。浏览器测试覆盖卡包筛选/搜索、主动技能、丈八蛇矛、装备转化和页面错误；截图输出到 `tests/artifacts/`。测试覆盖的是列出的场景，并非穷举所有技能组合。

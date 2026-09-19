@@ -235,6 +235,9 @@ function renderState(el,p){
   let badge=el.querySelector('.state-badge');if(!badge){badge=U.el('div','state-badge');el.appendChild(badge);}
   renderChain(el,p);
   badge.textContent=[p.marks.turned?'背面':'',p.marks.fields?.length?'田 '+p.marks.fields.length:'',p.marks.buqu?.length?'不屈 '+p.marks.buqu.map(c=>c.num).join('/'):'',p.marks.forms?.length?'化身 '+p.marks.forms.length:'',p.hp<=0&&p.alive?'体力 '+p.hp:''].filter(Boolean).join(' · ');
+  const expansionMarks=[['stars','星'],['wine','醇'],['inverse','逆'],['sidi','司敌'],['wrath','暴怒'],['bear','忍'],['nightmare','梦魇'],['danxin','殚心'],['mingjian','明鉴']].map(([key,label])=>{const value=Array.isArray(p.marks[key])?p.marks[key].length:p.marks[key];return value?label+' '+value:'';});
+  if(p.marks.fog!==undefined)expansionMarks.push('大雾');if(p.marks.gale!==undefined)expansionMarks.push('狂风');
+  badge.textContent=[badge.textContent,...expansionMarks].filter(Boolean).join(' · ');badge.title=badge.textContent;
   badge.style.display=badge.textContent?'':'none';
 }
 
@@ -490,7 +493,7 @@ function startRequest(){
     P.askOpts = opts.filter(o=>o.kind==='ask');
     let extra='';
     if(P.askOpts.length)
-      extra = '<br>'+P.askOpts.map(o=>`<a href="#" data-ask="${o.id}" style="color:#8fd0ff">[发动${SKILL_TEXT[o.id][0]}]</a>`).join(' ');
+      extra = '<br>'+P.askOpts.map(o=>`<a href="#" data-ask="${o.id}" data-as="${o.as}" style="color:#8fd0ff">[${SKILL_TEXT[o.id][0]} → ${o.as}]</a>`).join(' ');
     setPrompt((req.prompt||`请打出【${req.need}】`)+extra);
     setBtns(false, req.cancelable!==false, false);
     U.$('promptText').querySelectorAll('[data-ask]').forEach(a=>{
@@ -499,7 +502,7 @@ function startRequest(){
         const id=a.dataset.ask;
         const r = P.resolve; const req2=P.req;
         P=null; clearTargets(); setPrompt('—'); setBtns(false,false,false); applyCardStates();
-        const card = await Skills.resolveAsk(g,p,id, req2.rescue?'桃':req2.need);
+        const card = await Skills.resolveAsk(g,p,id,a.dataset.as);
         r(card);
       };
     });
@@ -524,14 +527,14 @@ function renderActions(){
   if(!P || P.req.kind!=='play') return;
   const {g,p}=P;
   const add=(label,tip,fn,enabled=true)=>{const b=U.el('button','skill-action',label);b.title=tip;b.disabled=!enabled;b.onclick=fn;box.appendChild(b);};
-  for(const id of [...p.skills,'huangtian_give','zhiba_duel','recast']){const sk=SKILLS[id];if(!p.skills.includes(id)&&!sk?.avail?.(g,p))continue;if(sk?.active && p.hasSkill(id)) add(sk.name,SKILL_TEXT[id][1],()=>finish({type:'skill',skill:id}),!sk.avail||sk.avail(g,p));}
+  for(const id of [...p.skills,'huangtian_give','zhiba_duel','recast','xiansi_slash']){const sk=SKILLS[id];if(!p.skills.includes(id)&&!sk?.avail?.(g,p))continue;if(sk?.active && p.hasSkill(id)) add(sk.name,SKILL_TEXT[id][1],()=>finish({type:'skill',skill:id}),!sk.avail||sk.avail(g,p));}
   for(const v of VIEW_AS){
     if(v.ask || (!v.equip&&!p.hasSkill(v.id)) || (v.extra&&!v.extra(g,p))) continue;
     if(!g.canUseInPlay(p,makeVirtual(v.as,[],v.id))) continue;
     const pool=(v.area==='any'?p.hand.concat(p.equipList()):p.hand).filter(c=>v.filter(g,p,c));
     add((v.equip?'丈八蛇矛':SKILL_TEXT[v.id][0])+' → '+v.as,`选择${v.count}张牌发动`,()=>{P.view=v;P.sel=[];P.play=null;P.targets=[];clearTargets();setPrompt(`【${v.equip?'丈八蛇矛':SKILL_TEXT[v.id][0]}】：选择 ${v.count} 张牌作为【${v.as}】`);setBtns(false,true,true);applyCardStates();},pool.length>=v.count);
   }
-  for(const v of VIEW_AS.filter(v=>v.ask&&v.as==='杀'&&p.hasSkill(v.id)&&(!v.extra||v.extra(g,p)))) add(SKILL_TEXT[v.id][0],SKILL_TEXT[v.id][1],()=>finish({type:'skill',skill:'jijiang_play'}),g.canUseSha(p));
+  for(const v of VIEW_AS.filter(v=>v.ask&&v.id==='jijiang'&&v.as==='杀'&&p.hasSkill(v.id)&&(!v.extra||v.extra(g,p)))) add(SKILL_TEXT[v.id][0],SKILL_TEXT[v.id][1],()=>finish({type:'skill',skill:'jijiang_play'}),g.canUseSha(p));
 }
 
 function highlightTargets(filter){
@@ -616,12 +619,12 @@ function buildRespondCard(){
   const {g,p,req}=P;
   const sel=P.sel;
   if(!sel.length) return null;
+  const available=req.rescue?Skills.saveOptions(g,p,req.dying):Skills.options(g,p,req.need);
   const name = req.rescue ? null : req.need;
   /* 实体同名牌 */
   if(sel.length===1 && p.hand.includes(sel[0])){
     const c=sel[0];
-    if(req.rescue){ if(c.name==='桃'||(c.name==='酒'&&req.dying===p)) return c; }
-    else if(c.name===name) return c;
+    if(available.some(o=>o.kind==='real'&&o.cards.includes(c)))return c;
   }
   const targetName = req.rescue ? '桃' : name;
   for(const v of VIEW_AS){
@@ -629,6 +632,7 @@ function buildRespondCard(){
     if(v.equip){ if(!(p.equips.weapon&&p.equips.weapon.name==='丈八蛇矛')) continue; }
     else if(!p.hasSkill(v.id)) continue;
     if(v.extra && !v.extra(g,p)) continue;
+    if(!available.some(o=>o.kind==='view'&&o.id===v.id&&o.as===v.as&&o.count===v.count&&sel.every(c=>o.pool.includes(c))))continue;
     if(sel.length!==v.count) continue;
     if(!sel.every(c=>v.filter(g,p,c))) continue;
     if(v.id==='luanji' && sel[0].suit!==sel[1].suit) continue;
@@ -794,9 +798,9 @@ function onEnd(){ if(P && P.req.kind==='play') finish({type:'end'}); }
 function pickAreaModal(g,p,req){
   const t=req.target;
   const list=[];
-  t.hand.forEach((c,i)=>{ const o=Object.create(c); o._back=true; o._label='手牌'; o._real=c; list.push(o); });
-  t.equipList().forEach(c=>{ const o=Object.create(c); o._label=SLOT_NAME[c.slot]; o._real=c; list.push(o); });
-  t.judges.forEach(c=>{ const o=Object.create(c); o._label='判定区'; o._real=c; list.push(o); });
+  if(!req.area||req.area==='hand')t.hand.forEach((c,i)=>{ const o=Object.create(c); o._back=true; o._label='手牌'; o._real=c; list.push(o); });
+  if(!req.area||req.area==='equip')t.equipList().forEach(c=>{ const o=Object.create(c); o._label=SLOT_NAME[c.slot]; o._real=c; list.push(o); });
+  if(!req.area||req.area==='judge')t.judges.forEach(c=>{ const o=Object.create(c); o._label='判定区'; o._real=c; list.push(o); });
   return modal({title:req.prompt||`选择 ${t.name} 的一张牌`, cards:list}).then(r=>r?r._real:null);
 }
 

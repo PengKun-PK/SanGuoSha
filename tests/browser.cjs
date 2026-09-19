@@ -10,7 +10,7 @@ const fs=require('node:fs');
  try{
   await page.goto('http://127.0.0.1:8765');
   await page.getByRole('button',{name:'开 始 游 戏'}).click();
-  await page.waitForFunction(()=>document.querySelectorAll('#pickList .gcard').length===56);
+  await page.waitForFunction(()=>document.querySelectorAll('#pickList .gcard').length===118);
   await page.getByRole('button',{name:'山',exact:true}).click();
   assert.equal(await page.locator('#pickList .gcard:visible').count(),8);
   await page.getByRole('textbox',{name:'搜索武将或技能'}).fill('姜维');

@@ -77,7 +77,8 @@ function startPick(){
   const controls=U.el('div','pick-filters');let selectedPack='全部';
   const search=U.el('input');search.placeholder='搜索武将 / 技能';search.setAttribute('aria-label','搜索武将或技能');
   const filter=()=>{for(const el of list.children){const gen=GENERALS[el.dataset.gid];const term=search.value.trim();el.style.display=(selectedPack==='全部'||gen.pack===selectedPack)&&(!term||[gen.name,...gen.skills.map(s=>SKILL_TEXT[s][0])].some(t=>t.includes(term)))?'':'none';}};
-  for(const pack of ['全部','标准','风','火','林','山']){const b=U.el('button',pack==='全部'?'on':'',pack);b.onclick=()=>{selectedPack=pack;controls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));filter();};controls.appendChild(b);}
+  const packOrder=['标准','风','火','林','山',...Array.from({length:5},(_,i)=>`一将成名 ${2011+i}`),'神·风','神·火','神·林','神·山'];
+  for(const pack of ['全部',...new Set(pickableGenerals().map(id=>GENERALS[id].pack).sort((a,b)=>packOrder.indexOf(a)-packOrder.indexOf(b)))]){const b=U.el('button',pack==='全部'?'on':'',pack);b.onclick=()=>{selectedPack=pack;controls.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));filter();};controls.appendChild(b);}
   search.oninput=filter;controls.appendChild(search);list.before(controls);
   let chosen=null;
   for(const gid of candidates){
@@ -173,7 +174,7 @@ const RULES = `<div class="rules-text">
 距离 = 座位间的最短间隔；+1马让别人算你距离时+1，−1马让你算别人时−1。<br>
 【杀】只能指定攻击范围内的角色，攻击范围默认为1，装备武器后等于武器射程。
 <h4>武将与技能</h4>
-标准武将与风火林山32名常规武将，共57名。选择卡包或搜索名字、技能选将。<br>
+标准、风火林山、一将成名2011—2015及八神将，共119名（于吉暂时停用）。选择卡包或搜索名字、技能选将。技能采用经典身份局修订规则；2015按自定义名单含郭皇后、公孙瓒。<br>
 出牌区的金色按钮用于主动技能与转化技能；装备效果会在对应时机自动生效或询问。鼠标停留在技能、装备上可查看说明。<br>
 蓝色边框表示横置，灰色立绘表示翻面。觉醒、限定技、田、不屈和化身会保留到后续回合。<br>
 对局顶部可随时改变速度；战报保留出牌和结算信息。

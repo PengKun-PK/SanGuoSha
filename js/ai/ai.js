@@ -293,6 +293,8 @@ async function decide(g,p,req){
       if(!opts.length) return null;
       const real = opts.find(o=>o.kind==='real');
       if(real) return real.cards[0];
+      const wine = opts.find(o=>o.kind==='ask'&&o.as==='酒');
+      if(wine) return await Skills.resolveAsk(g,p,wine.id,'酒');
       return await findResponse(g,p,'桃',req);
     }
     return await findResponse(g,p,req.need,req);

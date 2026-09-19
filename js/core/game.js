@@ -251,17 +251,18 @@ class Game {
       if(!p.alive) continue;
       for(const id of p.skills.slice()){
         const sk = SKILLS[id];
-        if(!sk || sk.event!==event) continue;
+        if(!sk || !(Array.isArray(sk.event)?sk.event.includes(event):sk.event===event)) continue;
         if(sk.lord && p.identity!=='zhu') continue;
         if(!p.hasSkill(id)) continue;
         try{
-          if(sk.can && !sk.can(this,p,ctx)) continue;
+          if(sk.can && !sk.can(this,p,ctx,event)) continue;
         }catch(e){ continue; }
         if(!sk.forced){
           const yes = await this.askSkill(p, id, ctx);
           if(!yes) continue;
         }
-        await this.runSkill(id, p, ctx);
+        await this.runSkill(id, p, ctx, event);
+        if(ctx.cancelled&&['damageBefore','damageCaused','cardEffectBefore','shaTarget'].includes(event))return;
         if(this.over) return;
       }
     }
@@ -273,12 +274,12 @@ class Game {
     await U.wait(900);
     return AI.wantSkill(this,p,id,ctx);
   }
-  async runSkill(id, p, ctx){
+  async runSkill(id, p, ctx, event){
     const sk=SKILLS[id];
     if(!p.alive || !sk?.run || (sk.active && (!p.hasSkill(id) || (sk.avail&&!sk.avail(this,p))))) return;
     this.log(`${this.nm(p)} 发动了 ${this.sn(id)}。`, true);
     await FX.banner(SKILL_TEXT[id][0], p.name);
-    await sk.run(this,p,ctx);
+    await sk.run(this,p,ctx,event);
     UI.refresh(this);
   }
 
@@ -313,7 +314,7 @@ class Game {
     await this.trigger('damageBefore', ctx);
     if(ctx.cancelled || ctx.n<=0) return;
     /* 藤甲：火焰伤害+1 */
-    const ignoreArmor=ctx.isSha&&!ctx.chain&&ctx.source?.equips.weapon?.name==='青釭剑';
+    const ignoreArmor=ctx.isSha&&!ctx.chain&&YJ.ignoreArmor(this,ctx.source,t);
     if(!ignoreArmor&&t.equips.armor?.name==='藤甲'&&ctx.nature==='fire') ctx.n++;
     if(!ignoreArmor&&t.equips.armor?.name==='白银狮子') ctx.n=Math.min(ctx.n,1);
     ctx.applied=true;
@@ -493,6 +494,7 @@ class Game {
     /* 离开原区域 */
     for(const c of reals) this.removeCard(user, c);
     this.processing.push(...reals.filter(c=>!this.processing.includes(c)));
+    await this.flushLoss();
     UI.refresh(this);
 
     /* 展示 */
@@ -519,6 +521,7 @@ class Game {
     }
     if(card.name==='酒') user.flags.jiuUsed = true;
 
+    if(info.tgt?.all)targets=this.orderFrom(user).filter(p=>info.tgt.all!=='others'||p!==user).filter(t=>!(t.hasSkill('weimu')&&isBlack(card))&&!(card.name==='南蛮入侵'&&(t.hasSkill('huoshou')||t.hasSkill('juxiang'))));
     await this.trigger('useCard', {player:user, card, targets});
 
     /* --- 分类结算 --- */
@@ -534,8 +537,6 @@ class Game {
     }else{
       let list = targets ? targets.slice() : [];
       if(info.tgt && info.tgt.all){
-        list = this.orderFrom(user).filter(p=>info.tgt.all!=='others'||p!==user);
-        list=list.filter(t=>!(t.hasSkill('weimu')&&isBlack(card)) && !(card.name==='南蛮入侵'&&(t.hasSkill('huoshou')||t.hasSkill('juxiang'))));
         FX.aoe();
       }
       const eff = CardEffect[card.name];
@@ -610,7 +611,7 @@ class Game {
     ctx = ctx||{};
     /* 八卦阵：需要【闪】时可先判定 */
     if(name==='闪' && p.alive && ((p.equips.armor && p.equips.armor.name==='八卦阵') || (!p.equips.armor && p.hasSkill('bazhen')))){
-      const ignored = ctx.from && ctx.from.equips.weapon && ctx.from.equips.weapon.name==='青釭剑';
+      const ignored = ctx.from && YJ.ignoreArmor(this,ctx.from,p);
       if(!ignored){
         const yes = await this.ask(p,{kind:'confirm', bagua:true,
           prompt:'是否发动 <b>八卦阵</b> 进行判定？（红色则视为打出【闪】）'});
@@ -709,6 +710,7 @@ class Game {
     }
     if(ph==='play'){
       if(p.flags.skipPlay){ this.log(`${this.nm(p)} 跳过出牌阶段。`); return; }
+      await this.trigger('playBefore',{player:p,phase:'play'});
       await this.playPhase(p);
       return;
     }
@@ -817,12 +819,12 @@ const CardEffect = {
     await U.wait(300);
     /* 仁王盾 */
     if(target.equips.armor && target.equips.armor.name==='仁王盾' && isBlack(card)
-       && !(user.equips.weapon && user.equips.weapon.name==='青釭剑')){
+       && !YJ.ignoreArmor(g,user,target)){
       g.log(`${g.nm(target)} 的【仁王盾】使黑色【杀】无效。`);
       await U.wait(300); return;
     }
     if(target.equips.armor && target.equips.armor.name==='藤甲' && !card.nature
-       && !(user.equips.weapon && user.equips.weapon.name==='青釭剑')){
+       && !YJ.ignoreArmor(g,user,target)){
       g.log(`${g.nm(target)} 的【藤甲】使普通【杀】无效。`);
       await U.wait(300); return;
     }
@@ -979,6 +981,7 @@ const CardEffectAll = {
     for(const t of g.orderFrom(user).filter(x=>targets.includes(x))){
       if(!t.alive||g.over) continue;
       if(await g.askWuxie(card,t,user))continue;
+      if(!await YJ.effect(g,{user,card,target:t}))continue;
       if(!t.alive||g.over)continue;
       if(t.equips.armor && t.equips.armor.name==='藤甲'){
         g.log(`${g.nm(t)} 的【藤甲】使【南蛮入侵】无效。`); continue;
@@ -991,6 +994,7 @@ const CardEffectAll = {
     for(const t of g.orderFrom(user).filter(x=>targets.includes(x))){
       if(!t.alive||g.over) continue;
       if(await g.askWuxie(card,t,user))continue;
+      if(!await YJ.effect(g,{user,card,target:t}))continue;
       if(!t.alive||g.over)continue;
       if(t.equips.armor && t.equips.armor.name==='藤甲'){
         g.log(`${g.nm(t)} 的【藤甲】使【万箭齐发】无效。`); continue;
@@ -1004,6 +1008,7 @@ const CardEffectAll = {
       if(g.over)break;
       if(!t.alive)continue;
       if(await g.askWuxie(card,t,user))continue;
+      if(!await YJ.effect(g,{user,card,target:t}))continue;
       if(t.alive&&!g.over&&t.hp<t.maxHp)await g.recover(t,1);
     }
   },
@@ -1015,6 +1020,7 @@ const CardEffectAll = {
       if(!pool.length||g.over) break;
       if(!t.alive) continue;
       if(await g.askWuxie(card,t,user))continue;
+      if(!await YJ.effect(g,{user,card,target:t}))continue;
       if(!t.alive||g.over)continue;
       // A counterspell's presentation may clear the central pool display.
       UI.showPool(pool);
