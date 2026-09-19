@@ -32,6 +32,16 @@ const PORTRAIT_ROWS = [
  ['zhanghe','dengai','jiangwei','liushan','sunce','erzhang','caiwenji','zuoci'],
 ];
 PORTRAIT_ROWS.forEach((row,y)=>row.forEach((id,x)=>ASSETS.generals[id]={src:'assets/art/generals.png',x,y,cols:row.length,rows:7}));
+// Individually painted Yijiang 2011–2015 and divine portraits.
+const EXPANSION_PORTRAITS = [
+  'zhangchunhua','caozhi','yujin','fazheng','masu','xushu','lingtong','xusheng','wuguotai','chengong','gaoshun',
+  'xunyou','wangyi','caozhang','guanxingzhangbao','liaohua','madai','bulianshi','chengpu','handang','huaxiong','liubiao',
+  'caochong','manchong','guohuai','guanping','jianyong','liufeng','zhuran','yufan','panzhangmazhong','liru','fuhuanghou',
+  'caozhen','chenqun','hanhaoshihuan','zhangsong','wuyi','zhoucang','sunluban','zhuhuan','guyong','jushou','caifuren',
+  'caorui','zhongyao','guohuanghou','liuchen','xiahoushi','zhangyi','quancong','sunxiu','zhuzhi','gongsunyuan','gongsunzan',
+  'shenlvmeng','shenzhouyu','shenzhugeliang','shencaocao','shenlvbu','shenzhaoyun','shensimayi','shenguanyu',
+];
+EXPANSION_PORTRAITS.forEach(id=>ASSETS.generals[id]=`assets/art/generals/${id}.webp`);
 const CARD_ART_NAMES=['杀','闪','桃','酒','无懈可击','无中生有','过河拆桥','顺手牵羊','决斗','借刀杀人','南蛮入侵','万箭齐发','桃园结义','五谷丰登','乐不思蜀','兵粮寸断','闪电','诸葛连弩','雌雄双股剑','青釭剑','寒冰剑','青龙偃月刀','丈八蛇矛','贯石斧','方天画戟','麒麟弓','八卦阵','仁王盾','藤甲','赤兔','的卢','绝影'];
 CARD_ART_NAMES.forEach((name,i)=>ASSETS.cards[name]={src:'assets/art/cards.png',x:i%8,y:Math.floor(i/8),cols:8,rows:4});
 for(const [name,base] of Object.entries({'大宛':'赤兔','紫骍':'绝影','爪黄飞电':'的卢'}))ASSETS.cards[name]=ASSETS.cards[base];

@@ -36,7 +36,7 @@ function cardEl(card, extra){
 }
 
 function generalCardEl(p){
-  const d = U.el('div','gcard k-'+p.kingdom);
+  const d = U.el('div','gcard k-'+p.kingdom+(GENERALS[p.gid]?.k==='god'?' is-divine':''));
   d.innerHTML = `
     <div class="gc-portrait">${Art.portrait(p.gid)}</div>
     <div class="gc-shade"></div>
@@ -64,7 +64,7 @@ function hpBeads(container, p, base){
 }
 
 function seatEl(p){
-  const d = U.el('div','seat k-'+p.kingdom);
+  const d = U.el('div','seat k-'+p.kingdom+(GENERALS[p.gid]?.k==='god'?' is-divine':''));
   d.innerHTML = `
     <div class="s-mark"></div>
     <div class="seat-box">

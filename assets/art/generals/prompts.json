@@ -1,0 +1,383 @@
+{
+  "generation": "Built-in image_gen; one original image per character",
+  "portraits": [
+    {
+      "id": "zhangchunhua",
+      "name": "张春华",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 张春华, cold calculating adult noblewoman, black violet silk, silver hairpin, concealed dagger, moonlit plum garden. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "caozhi",
+      "name": "曹植",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 曹植, young handsome poet prince, flowing ivory blue robes, wine cup and bamboo manuscript, falling petals. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "yujin",
+      "name": "于禁",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 于禁, disciplined middle aged commander, navy iron lamellar armor, spear, rain soaked military banners. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "fazheng",
+      "name": "法正",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 法正, sharp eyed strategist with short beard, dark green gold robes, bamboo scroll, candlelit command pavilion. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "masu",
+      "name": "马谡",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 马谡, confident young scholar commander, jade green robes and light armor, military map, mountain pass. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "xushu",
+      "name": "徐庶",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 徐庶, wandering swordsman scholar, weathered green cloak, sword and scroll, misty bamboo forest. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "lingtong",
+      "name": "凌统",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 凌统, fierce young warrior, crimson light armor, twin short blades, river battlefield. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "xusheng",
+      "name": "徐盛",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 徐盛, stalwart commander, red black plated armor, long spear, fortress banners over river. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "wuguotai",
+      "name": "吴国太",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 吴国太, dignified elderly dowager with gray hair, elaborate restrained gold headdress, burgundy ceremonial silk, palace lanterns. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "chengong",
+      "name": "陈宫",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 陈宫, intense bearded middle aged strategist, ochre black scholarly robes, rolled command scroll, stormy fortress. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "gaoshun",
+      "name": "高顺",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 高顺, resolute heavy infantry commander, black iron armor, broad shield and spear, elite soldiers silhouettes. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "xunyou",
+      "name": "荀攸",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 荀攸, quiet perceptive middle aged advisor, indigo scholarly robes, bamboo strategy slips, dim study. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "wangyi",
+      "name": "王异",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 王异, resolute adult warrior noblewoman, navy white battle robes and armor, sword, wind swept winter battlements. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "caozhang",
+      "name": "曹彰",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 曹彰, powerful young warrior with tawny beard, gold dark blue armor, great axe, dust filled battlefield. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "guanxingzhangbao",
+      "name": "关兴与张苞",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 关兴与张苞, TWO distinct young male warriors side by side equally visible, one green armor crescent blade, one red black armor serpent spear, oath battlefield. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "liaohua",
+      "name": "廖化",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 廖化, scarred elderly veteran, gray beard, worn green armor, spear, mountain campaign dawn. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "madai",
+      "name": "马岱",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 马岱, lean frontier cavalry warrior, white green armor and scarf, curved saber, desert cavalry. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "bulianshi",
+      "name": "步练师",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 步练师, elegant adult noblewoman, ivory rose silk robes, delicate gold hair ornaments, lotus pond at dusk. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "chengpu",
+      "name": "程普",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 程普, stern elderly warrior, gray beard, iron helmet red plume, long spear, river fleet. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "handang",
+      "name": "韩当",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 韩当, weathered middle aged archer general, red leather lamellar, powerful bow held diagonally, naval deck. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "huaxiong",
+      "name": "华雄",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 华雄, massive intimidating warrior, black bronze armor, huge curved blade, red banner and dusty fortress. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "liubiao",
+      "name": "刘表",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 刘表, aged aristocratic governor, long gray beard, gold ochre ceremonial robes, dignified crown, palace terrace. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "caochong",
+      "name": "曹冲",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 曹冲, fully clothed CHILD prodigy, curious kind boy in modest blue Han silk robes, holding miniature balance scale, distant elephant by river, gentle morning light. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "manchong",
+      "name": "满宠",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 满宠, austere middle aged magistrate commander, dark blue robes and armor, official tablet, stone city gate. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "guohuai",
+      "name": "郭淮",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 郭淮, thin battle hardened commander, steel blue armor, fur collar, spear, cold mountain fortress. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "guanping",
+      "name": "关平",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 关平, heroic young warrior, green gold armor, crescent blade, flowing green scarf, pine mountain. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "jianyong",
+      "name": "简雍",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 简雍, relaxed witty middle aged bearded scholar, loosely draped modest green linen robes, folding bamboo scroll, rustic pavilion. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "liufeng",
+      "name": "刘封",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 刘封, proud young prince warrior, green bronze armor, broad sword, towering fortress wall. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhuran",
+      "name": "朱然",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 朱然, energetic young commander, red orange armor, sword, firelit naval battlefield with ordinary embers. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "yufan",
+      "name": "虞翻",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 虞翻, eccentric mature scholar, rust red scholarly robes, bamboo divination slips, ancient tree and study. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "panzhangmazhong",
+      "name": "潘璋与马忠",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 潘璋与马忠, TWO distinct male ambush warriors both faces visible, burly bearded red armored commander with blade and lean hooded bowman, reeds by river. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "liru",
+      "name": "李儒",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 李儒, sinister slender mature advisor, black purple robes, narrow beard, small bronze cup, candlelit dark court. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "fuhuanghou",
+      "name": "伏皇后",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 伏皇后, dignified anxious adult empress, crimson ivory ceremonial robes, ornate gold phoenix hair ornaments, dark palace curtain. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "caozhen",
+      "name": "曹真",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 曹真, broad shouldered mature commander, ornate navy gold armor, sword, military camp. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "chenqun",
+      "name": "陈群",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 陈群, scholarly middle aged court official, dark indigo ceremonial robe, tall traditional court hat, bamboo tablets, imperial hall. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "hanhaoshihuan",
+      "name": "韩浩与史涣",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 韩浩与史涣, TWO distinct mature male commanders side by side both faces visible, navy armored spear officer and bearded steel armored sword officer, grain convoy fortress. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhangsong",
+      "name": "张松",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 张松, short stout clever scholar with distinctive expressive face, green brown robes, unfurled map, mountain pavilion. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "wuyi",
+      "name": "吴懿",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 吴懿, experienced middle aged commander, green bronze lamellar armor, sword and flowing cloak, mountain army. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhoucang",
+      "name": "周仓",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 周仓, rugged muscular dark skinned Chinese warrior with thick beard, green headwrap, heavy blade, roaring river rapids. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "sunluban",
+      "name": "孙鲁班",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 孙鲁班, commanding adult princess with calculating gaze, elaborate crimson black silk, gold hairpins, palace shadows. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhuhuan",
+      "name": "朱桓",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 朱桓, fearless young commander, red bronze armor, spear, charging stance on river battlements. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "guyong",
+      "name": "顾雍",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 顾雍, reserved mature statesman with neat beard, wine red court robes, ceremonial tablet, tranquil palace garden. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "jushou",
+      "name": "沮授",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 沮授, melancholy wise middle aged advisor, ochre ivory robes, bamboo scroll, autumn military camp. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "caifuren",
+      "name": "蔡夫人",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 蔡夫人, ambitious adult noblewoman, luxurious plum gold silk, elaborate hair ornaments, silk fan, candlelit palace. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "caorui",
+      "name": "曹叡",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 曹叡, young regal emperor, imperial black navy gold robes, traditional beaded crown, ornate palace throne backdrop. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhongyao",
+      "name": "钟繇",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 钟繇, elderly master calligrapher with white beard, indigo ivory scholarly robes, large brush and blank scroll, ink study. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "guohuanghou",
+      "name": "郭皇后",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 郭皇后, regal mature empress, deep blue gold ceremonial silk, ornate phoenix crown, imperial palace light. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "liuchen",
+      "name": "刘谌",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 刘谌, defiant adult prince warrior, jade white gold armor, drawn sword, besieged palace in rain. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "xiahoushi",
+      "name": "夏侯氏",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 夏侯氏, ADULT noblewoman age 25, modest peach green Han silk, floral hair ornaments, carrying woven basket, sunlit woodland. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhangyi",
+      "name": "张嶷",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 张嶷, rugged frontier general, green leather bronze armor, spear, lush southwest mountains. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "quancong",
+      "name": "全琮",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 全琮, wealthy charismatic mature commander, red gold armor and cream cloak, sword, prosperous river port. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "sunxiu",
+      "name": "孙休",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 孙休, refined adult emperor, crimson gold ceremonial robes, traditional crown, jade tablet, imperial courtyard. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "zhuzhi",
+      "name": "朱治",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 朱治, loyal mature veteran with graying beard, red bronze armor, spear, misty river fleet. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "gongsunyuan",
+      "name": "公孙渊",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 公孙渊, ambitious northern warlord, dark bronze armor and heavy fur mantle, sword, snowy Liaodong fortress. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "gongsunzan",
+      "name": "公孙瓒",
+      "tier": "mortal",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 公孙瓒, proud cavalry commander, gleaming white silver armor, white cloak, spear, white horse head visible behind shoulder, windswept northern plain. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. Grounded historical epic aesthetic, natural atmosphere, rich restrained colors, no supernatural halo or magic."
+    },
+    {
+      "id": "shenlvmeng",
+      "name": "神吕蒙",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神吕蒙, mysterious enlightened warrior scholar, white jade teal armor, luminous scrolls orbiting his shoulders, enormous celestial eye reflected in dark ocean, spectral teal tides and sacred ivory halo. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shenzhouyu",
+      "name": "神周瑜",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神周瑜, beautiful adult male celestial fire commander, flowing crimson gold robes and armor, sword, colossal phoenix of solar fire spreading wings behind him, burning fleet far below, vivid crimson orange gold. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shenzhugeliang",
+      "name": "神诸葛亮",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神诸葛亮, wise mature celestial strategist with neat beard, blue white robes, feather fan, seven brilliant stars connected around him, cosmic nebula and spiraling wind, luminous sapphire violet silver. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shencaocao",
+      "name": "神曹操",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神曹操, domineering middle aged soul emperor with short beard, black gold imperial armor and dark purple cloak, sword, spectral army and ravens behind him, enormous blood moon, violet black crimson gold. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shenlvbu",
+      "name": "神吕布",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神吕布, towering muscular god of war, black iron gold armor, two long crimson pheasant plumes, colossal halberd, furious red purple aura exploding into cracked celestial landscape, no gore, dramatic black crimson purple. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shenzhaoyun",
+      "name": "神赵云",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神赵云, heroic handsome adult male lightning dragon warrior, intricate silver white armor, flowing white cloak, spear, colossal silver dragon coiling through cyan lightning, luminous ice blue white silver. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shensimayi",
+      "name": "神司马懿",
+      "tier": "divine",
+      "prompt": "Original premium Three Kingdoms strategy card illustration. Chinese historical character: 神司马懿, older calculating celestial mastermind with narrow gray beard, black silver robes, raised hand controlling star orbits, giant eclipsed sun and cosmic clocklike celestial rings WITHOUT numerals, violet gold and obsidian. Painterly realism with finely detailed expressive face and fabric, cinematic light, premium collectible game art. Vertical 2:3 waist-up portrait, large clear face near upper center with 12 percent headroom, strong silhouette readable at thumbnail scale. Entire head and important weapon visible. Full bleed, no typography, no writing, no frame, no labels, no logo, no watermark, no UI. Historically inspired Chinese clothing and weapons, no western helmets. GOD TIER: extravagant supernatural mythic spectacle, sacred monumental background, luminous high contrast magic, far more spectacular than mortal generals."
+    },
+    {
+      "id": "shenguanyu",
+      "name": "神关羽",
+      "tier": "divine",
+      "prompt": "Use case: stylized-concept. Asset type: premium Three Kingdoms strategy card game portrait, original illustration of DIVINE GUAN YU (神关羽). A majestic mature Chinese war god with a long flowing black beard, stern crimson-toned face, ornate jade and antique-gold dragon armor, green silk robes and a monumental crescent guandao held diagonally behind the shoulder. A colossal spectral emerald dragon coils through storm clouds behind him, jade lightning, floating gold embers, sacred circular halo. GOD TIER aesthetic distinctly supernatural and far more spectacular than mortal historical generals. Painterly realism, exceptional face detail, cinematic volumetric light, luminous emerald and antique gold against deep near-black clouds. Vertical 2:3 composition, waist-up portrait, face large and unobstructed near upper center, whole head inside frame with 12% headroom, strong silhouette readable at thumbnail scale. Artwork fills entire canvas, no frame, no typography, no labels, no logos, no watermark, no game UI. Historically inspired Chinese clothing and weapon shapes, no western fantasy helmets."
+    }
+  ]
+}

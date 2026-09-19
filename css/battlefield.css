@@ -455,3 +455,16 @@
 .seat .chain-mark svg{left:-12px;top:19px;width:78px;height:16px}
 /* 文字标记让开左上角的血条 */
 .state-badge{left:auto!important;right:6px;top:auto!important;bottom:26px;max-width:72%!important;text-align:right}
+
+/* Divine art remains recognizable after choosing a normal kingdom in battle.
+   Edge-only decoration preserves faces, skill labels and targeting indicators. */
+.gcard.is-divine .gc-portrait,.seat.is-divine .s-portrait{
+  box-shadow:inset 0 0 0 2px #e9ca78,inset 0 0 18px #bd8cfb55;
+}
+.gcard.is-divine .gc-shade,.seat.is-divine .s-shade{
+  border:1px solid #f6dfa688;
+  border-radius:inherit;
+}
+.gcard.is-divine .gc-name,.seat.is-divine .s-name{
+  color:#fff0bc;text-shadow:0 2px 5px #000,0 0 9px #dca63caa;
+}
