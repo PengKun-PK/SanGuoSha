@@ -168,16 +168,57 @@ async function drawTo(toEl, n){
   await U.hardWait(140*U.speed);
 }
 
-/* ---- 判定牌展示 ---- */
-async function judge(cardObj, ok, text){
-  const w = U.el('div','judge-card');
+/* ---- 判定牌展示 ----
+   判定牌先翻开并留在台面上，改判技能（鬼才/鬼道等）是在看得见牌面的
+   情况下询问的；改判就原地换牌，最后才亮出生效与否的结论。 */
+let pendingJudge = null;
+function judgeSlot(cardObj){
+  const slot = U.el('div','judge-slot');
+  slot.appendChild(UI.cardEl(cardObj,''));
+  return slot;
+}
+function judgeReveal(cardObj, reason){
+  judgeClear();
+  const w = U.el('div','judge-card pending');
   w.style.left='50%'; w.style.top='38%';
-  const c = UI.cardEl(cardObj,'');
-  w.appendChild(c);
+  const cap = U.el('div','judge-label');
+  cap.textContent = reason ? `【${reason}】判定牌` : '判定牌';
+  w.appendChild(cap);
+  const slot = judgeSlot(cardObj);
+  w.appendChild(slot);
+  layer().appendChild(w);
+  pendingJudge = {w, slot, card:cardObj};
+  return U.wait(620);
+}
+function judgeSwap(cardObj){
+  if(!pendingJudge || !cardObj || pendingJudge.card===cardObj) return Promise.resolve();
+  pendingJudge.card = cardObj;
+  const slot = judgeSlot(cardObj);
+  slot.classList.add('swap');
+  pendingJudge.w.replaceChild(slot, pendingJudge.slot);
+  pendingJudge.slot = slot;
+  return U.wait(420);
+}
+function judgeClear(){
+  if(pendingJudge){ pendingJudge.w.remove(); pendingJudge=null; }
+}
+async function judge(cardObj, ok, text){
+  let w;
+  if(pendingJudge){
+    w = pendingJudge.w;
+    if(pendingJudge.card!==cardObj) w.replaceChild(judgeSlot(cardObj), pendingJudge.slot);
+    pendingJudge = null;
+    w.classList.remove('pending');
+    w.classList.add('settle');
+  }else{
+    w = U.el('div','judge-card flip');
+    w.style.left='50%'; w.style.top='38%';
+    w.appendChild(judgeSlot(cardObj));
+    layer().appendChild(w);
+  }
   const r = U.el('div','judge-result '+(ok?'good':'bad'));
   r.textContent = text || (ok?'成功':'失败');
   w.appendChild(r);
-  layer().appendChild(w);
   setTimeout(()=>w.remove(),1600);
   await U.wait(900);
 }
@@ -205,5 +246,5 @@ function dying(on){
 function aoe(){ screenFx('fx-aoe',820); }
 
 return {banner,turnBanner,phaseBanner,damage,heal,loseHp,slash,dodge,beam,flyCard,drawTo,
-        judge,death,revealIdentity,dying,aoe,screenFx};
+        judge,judgeReveal,judgeSwap,judgeClear,death,revealIdentity,dying,aoe,screenFx};
 })();

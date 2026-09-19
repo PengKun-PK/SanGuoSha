@@ -258,7 +258,7 @@ class Game {
           if(sk.can && !sk.can(this,p,ctx,event)) continue;
         }catch(e){ continue; }
         if(!sk.forced){
-          const yes = await this.askSkill(p, id, ctx);
+          const yes = await this.askSkill(p, id, ctx, event);
           if(!yes) continue;
         }
         await this.runSkill(id, p, ctx, event);
@@ -267,10 +267,21 @@ class Game {
       }
     }
   }
-  async askSkill(p, id, ctx){
-    if(p.isHuman)
-      return await UI.request(this,p,{kind:'confirm',skill:id,
-        prompt:`是否发动 <b>${SKILL_TEXT[id][0]}</b>？<br><span style="font-size:11.5px;opacity:.8">${SKILL_TEXT[id][1]}</span>`});
+  async askSkill(p, id, ctx, event){
+    if(p.isHuman){
+      const req = {kind:'confirm', skill:id, ctx,
+        prompt:`是否发动 <b>${SKILL_TEXT[id][0]}</b>？<br><span style="font-size:11.5px;opacity:.8">${SKILL_TEXT[id][1]}</span>`};
+      /* 判定相关技能：把已经翻开的判定牌摆进弹窗，先看牌面再决定是否改判 */
+      if((event==='judgeCard'||event==='judgeDone') && ctx && ctx.card){
+        const done = event==='judgeDone';
+        const pass = done ? !!ctx.ok : (ctx.check ? !!ctx.check(ctx.card) : null);
+        req.preview = [{card:ctx.card, label:`${ctx.player?ctx.player.name:''}的【${ctx.reason||'判定'}】判定牌`}];
+        req.prompt += `<br><span style="font-size:12.5px">${done?'判定牌':'当前判定牌'} ${this.cn(ctx.card)}`
+          + (pass===null?'':` —— ${done?'':'此时'}<b style="color:${pass?'#6ede8a':'#ef8f74'}">${pass?'生效':'不生效'}</b>`)
+          + `</span>`;
+      }
+      return await UI.request(this,p,req);
+    }
     await U.wait(900);
     return AI.wantSkill(this,p,id,ctx);
   }
@@ -280,18 +291,21 @@ class Game {
     this.log(`${this.nm(p)} 发动了 ${this.sn(id)}。`, true);
     await FX.banner(SKILL_TEXT[id][0], p.name);
     await sk.run(this,p,ctx,event);
+    /* 改判技能换牌后，台面上亮着的那张判定牌要跟着换 */
+    if(event==='judgeCard' && ctx && ctx.card) await FX.judgeSwap(ctx.card);
     UI.refresh(this);
   }
 
   /* ---------------- 判定 ---------------- */
   async judge(p, opt){
     /* opt: {reason, check(card)->bool, resultText(card,ok)} */
-    const jd = { player:p, card:this.popDeck(1)[0], reason:opt.reason||'' };
+    const jd = { player:p, card:this.popDeck(1)[0], reason:opt.reason||'', check:opt.check||null };
     if(!jd.card) return {card:null, ok:false};
     jd.card._game=this;jd.card._judgedBy=p;
     this.processing.push(jd.card);
-    this.log(`${this.nm(p)} 进行【${opt.reason||'判定'}】判定。`);
-    /* 鬼才等改判 */
+    this.log(`${this.nm(p)} 进行【${opt.reason||'判定'}】判定，亮出 ${this.cn(jd.card)}。`);
+    /* 先翻开判定牌，再问鬼才/鬼道等改判技能：看见牌面之后才决定是否改判 */
+    await FX.judgeReveal(jd.card, jd.reason);
     await this.trigger('judgeCard', jd);
     jd.card._game=this;jd.card._judgedBy=p;
     const ok = opt.check ? opt.check(jd.card) : true;

@@ -148,7 +148,7 @@ Game.prototype.ask=async function(p,req){
  return result;
 };
 const askSkill=Game.prototype.askSkill;
-Game.prototype.askSkill=async function(p,id,ctx){const end=startWaiting(this,p,{kind:'confirm',skill:id});try{return await askSkill.call(this,p,id,ctx);}finally{end();}};
+Game.prototype.askSkill=async function(p,id,ctx,event){const end=startWaiting(this,p,{kind:'confirm',skill:id});try{return await askSkill.call(this,p,id,ctx,event);}finally{end();}};
 
 // Private identity notes are intentionally stored outside Player.identity and AI.
 const notes=new WeakMap();

@@ -104,14 +104,38 @@
   100%{opacity:0;transform:scaleX(1)}}
 
 /* ---------- 判定牌 ---------- */
-.judge-card{position:fixed;z-index:630;transform:translate(-50%,-50%);pointer-events:none;
-  animation:judgeLife 1.5s cubic-bezier(.2,1.2,.4,1) forwards}
+.judge-card{position:fixed;z-index:630;transform:translate(-50%,-50%);pointer-events:none}
+.judge-card.flip{animation:judgeLife 1.5s cubic-bezier(.2,1.2,.4,1) forwards}
 @keyframes judgeLife{
   0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotateY(180deg)}
   20%{opacity:1;transform:translate(-50%,-50%) scale(1.3) rotateY(0)}
   32%{transform:translate(-50%,-50%) scale(1.15)}
   78%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
   100%{opacity:0;transform:translate(-50%,-50%) scale(.85) translateY(-40px)}
+}
+/* 亮出判定牌后停在台面上等改判，结算时才淡出 */
+.judge-card.pending{animation:judgeFlipIn .6s cubic-bezier(.2,1.2,.4,1) forwards}
+@keyframes judgeFlipIn{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotateY(180deg)}
+  70%{opacity:1;transform:translate(-50%,-50%) scale(1.3) rotateY(0)}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+}
+.judge-card.settle{animation:judgeSettle 1.5s ease-out forwards}
+@keyframes judgeSettle{
+  0%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  72%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}
+  100%{opacity:0;transform:translate(-50%,-50%) scale(.85) translateY(-40px)}
+}
+/* 弹窗里已经摆了同一张判定牌，台面上那张先让位，免得两张叠在一起 */
+:root body:has(#modal:not(.hidden)) .judge-card.pending{visibility:hidden}
+.judge-label{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;
+  font-size:13px;letter-spacing:.2em;color:#f2ddab;text-shadow:0 2px 6px #000,0 0 12px #000}
+.judge-card.pending .judge-label{animation:judgeWait 1.4s ease-in-out .6s infinite}
+@keyframes judgeWait{0%,100%{opacity:.62}50%{opacity:1}}
+.judge-slot.swap{animation:judgeReplace .42s cubic-bezier(.2,1.2,.4,1)}
+@keyframes judgeReplace{
+  0%{opacity:0;transform:rotateY(90deg) scale(.82)}
+  100%{opacity:1;transform:none}
 }
 .judge-result{position:absolute;left:50%;bottom:-32px;transform:translateX(-50%);
   font-size:20px;letter-spacing:.24em;white-space:nowrap;font-weight:800;

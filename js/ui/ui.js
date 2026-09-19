@@ -357,12 +357,23 @@ function showPool(cards){
 }
 
 /* ================= 弹窗 ================= */
-function modal({title, body, buttons, cards, onCard}){
+function modal({title, body, buttons, cards, preview, onCard}){
   return new Promise(resolve=>{
     const m=U.$('modal');
     U.$('modalTitle').innerHTML = title||'';
     const b=U.$('modalBody'); b.innerHTML='';
     if(body){ const d=U.el('div'); d.innerHTML=body; d.style.width='100%'; b.appendChild(d); }
+    /* 只看不点的牌面，例如改判时已经翻开的判定牌 */
+    if(preview&&preview.length){
+      const row=U.el('div','modal-preview');
+      for(const it of preview){
+        const wrap=U.el('div','preview-card');
+        wrap.appendChild(cardEl(it.card,''));
+        if(it.label) wrap.appendChild(U.el('div','preview-label',it.label));
+        row.appendChild(wrap);
+      }
+      b.appendChild(row);
+    }
     if(cards){
       for(const c of cards){
         const e = c._back ? U.el('div','card-back mini') : cardEl(c,'mini');
@@ -451,7 +462,7 @@ function cardSelectable(c){
 function request(g, p, req){
   /* 弹窗类请求 */
   if(req.kind==='confirm')
-    return modal({title:'请选择', body:req.prompt,
+    return modal({title:'请选择', body:req.prompt, preview:req.preview,
       buttons:[{label:'发动',value:true},{label:'取消',value:false}]});
   if(req.kind==='choose')
     return modal({title:'请选择', body:req.prompt,
