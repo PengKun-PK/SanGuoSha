@@ -103,7 +103,8 @@ Game.prototype.trigger=async function(event,c){
   if(!c.responded){c.player.flags.usedCards=(c.player.flags.usedCards||0)+1;if(this.phase==='play'&&this.curPlayer===c.player)c.player.flags.playUsed=(c.player.flags.playUsed||0)+1;if(c.targets?.some(t=>t!==c.player))c.player.flags.targetedOthers=true;}
   if(c.card.type==='basic'&&(!c.responded||c.card.name==='闪'&&!this._yjResponse?.ctx?.allyCall))(c.player.flags.basicUsed||=[]).push(c.card.name);
  }
- if(event==='damaged'){this._phaseDamage=true;c.target.flags.damageTimes=(c.target.flags.damageTimes||0)+1;if(c.card){c.card._yjDamage=true;(c.card._yjVictims||=new Set()).add(c.target);}await this.trigger('hpChanged',{player:c.target});}
+ if(event==='damageApplied'){this._phaseDamage=true;c.target.flags.damageTimes=(c.target.flags.damageTimes||0)+1;if(c.card){c.card._yjDamage=true;(c.card._yjVictims||=new Set()).add(c.target);}}
+ if(event==='damaged'&&c.target.alive)await this.trigger('hpChanged',{player:c.target});
  await yjTrigger.call(this,event,c);
  if(event==='useCard')(c.player.flags.usedTypes||=[]).push(YJ.type(c.card));
  if(event==='cardFinished')c.player.flags.finishedCards=(c.player.flags.finishedCards||0)+1;

@@ -686,9 +686,9 @@ function aoeScore(g,p,name){
   return s-16;
 }
 
+const activeSkillIds=['zhiheng','tuxi','qingnang','rende','fanjian','lijian','kurou'];
 function pickActiveSkill(g,p,enemies,friends){
-  const order=['zhiheng','tuxi','qingnang','rende','fanjian','lijian','kurou'];
-  for(const id of order){
+  for(const id of activeSkillIds){
     if(!p.hasSkill(id)) continue;
     const sk=SKILLS[id];
     if(!sk.active) continue;
@@ -726,6 +726,6 @@ function pickActiveSkill(g,p,enemies,friends){
   return null;
 }
 
-return {setup, observe, attitude, isEnemy, isFriend, decide, playTurn,
+return {setup, observe, attitude, isEnemy, isFriend, decide, playTurn, activeSkillIds,
         wantSkill, wantWuxie, cardValue, findResponse, threat};
 })();

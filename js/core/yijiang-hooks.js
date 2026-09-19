@@ -89,6 +89,9 @@ SKILLS.recast.run=async(g,p)=>{p.flags.aiRecasts=(p.flags.aiRecasts||0)+1;await 
 EX.aiPlay=function(g,p){
  const old=yjAi(g,p);if(old)return old;
  for(const id of [...p.skills,'xiansi_slash']){
+  // Standard active skills have dedicated risk/benefit checks in AI.playTurn.
+  // Availability alone must not bypass those checks (especially Kurou at 1 HP).
+  if(AI.activeSkillIds.includes(id))continue;
   const sk=SKILLS[id];if(!sk?.active||!p.hasSkill(id)||!sk.avail?.(g,p))continue;
   if(['shenxing','danshou','huaiyi'].includes(id)&&p.hand.length<3)continue;
   if(id==='wuqian'&&p.flags.wuqian||id==='jiushi'&&(p.flags.jiuUsed||!p.hand.some(c=>c.name==='杀')))continue;

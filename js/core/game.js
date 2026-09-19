@@ -325,9 +325,15 @@ class Game {
     FX.damage(UI.elOf(t), ctx.n, ctx.nature);
     UI.refresh(this);
     await U.wait(520);
+    // Record the damage before rescue can cause nested events; post-damage
+    // skills only resolve after the dying/death procedure has finished.
+    await this.trigger('damageApplied', ctx);
+    if(t.hp<=0 && t.alive) await this.enterDying(t, ctx.source);
+    if(this.over) return;
+    await this.trigger('damageDone', ctx);
+    if(!t.alive || this.over) return;
     await this.trigger('damaged', ctx);
     UI.refresh(this);
-    if(t.hp<=0 && t.alive) await this.enterDying(t, ctx.source);
   }
 
   async loseHp(p, n, source=null){

@@ -2,6 +2,25 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {engine}=require('./harness.cjs');
 
+test('Huang Gai AI respects Kurou health and hand thresholds',async()=>{
+ for(const [hp,handCount,wantsKurou] of [[1,0,false],[1,2,false],[2,1,false],[2,0,true],[3,2,true],[4,3,false]]){
+  const a=engine(),g=a.game(['huanggai','zhangfei','zhaoyun']),p=g.players[0];
+  p.hp=hp;p.hand=Array.from({length:handCount},()=>a.makeCard('闪','heart',2));
+  assert.equal(a.SKILLS.kurou.avail(g,p),true,'legal player activation remains available');
+  const act=await a.AI.playTurn(g,p);
+  assert.equal(act.skill==='kurou',wantsKurou,`hp=${hp}, hand=${handCount}`);
+ }
+});
+
+test('Huang Gai AI stops repeated Kurou instead of dying during its play phase',async()=>{
+ const a=engine(),g=a.game(['huanggai','zhangfei','zhaoyun']),p=g.players[0];
+ p.hand=[];g.deck=Array.from({length:20},()=>a.makeCard('闪','heart',2));
+ g.askSave=async()=>null;
+ await g.playPhase(p);
+ assert.equal(p.alive,true);assert.equal(p.hp,2);assert.equal(p.hand.length,4);
+ assert.equal(g.logs.filter(s=>s.includes('发动了')&&s.includes('苦肉')).length,2);
+});
+
 test('AI chains two targets with one known enemy and an unknown second target',async()=>{
  const a=engine(),g=a.game(['caocao','zhangfei','zhaoyun','guanyu','sunquan']);
  const [lord,p,unknown]=g.players;g.curPlayer=p;
