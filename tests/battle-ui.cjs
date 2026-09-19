@@ -19,6 +19,10 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   await page.locator('.identity-menu').getByRole('button',{name:'忠臣',exact:true}).click();
   assert.equal(await page.getByRole('button',{name:'标记张飞的身份',exact:true}).innerText(),'记·忠臣');
   assert.equal(await page.evaluate(()=>__game.players[1].identity),'fan');
+  await page.getByRole('button',{name:'结束出牌',exact:true}).click();
+  assert.equal(await page.getByRole('button',{name:'标记张飞的身份',exact:true}).innerText(),'记·忠臣');
+  await page.evaluate(()=>{__game.curPlayer=__game.human;UI.request(__game,__game.human,{kind:'play'});});
+  assert.equal(await page.getByRole('button',{name:'标记张飞的身份',exact:true}).innerText(),'记·忠臣');
   await page.evaluate(()=>UI.refresh(__game));
   assert.equal(await page.getByRole('button',{name:'标记张飞的身份',exact:true}).innerText(),'记·忠臣');
   // 技能说明现在是悬停提示（#skillTooltip），不再是可点开的侧栏面板

@@ -123,7 +123,7 @@ function build(g){
   U.$('btnOk').onclick     = ()=>onOk();
   U.$('btnCancel').onclick = ()=>onCancel();
   U.$('btnEnd').onclick    = ()=>onEnd();
-  refresh(g);
+  UI.refresh(g);
 }
 
 /* 立绘图集的单元格接近正方形，座位框保持同样的比例，整幅立绘才不会被裁掉。
@@ -465,7 +465,7 @@ function request(g, p, req){
     P = {g,p,req,resolve, sel:[], targets:[], play:null, respondPool:[]};
     if(req.kind==='respond') P.respondPool = respondPoolOf(g,p,req);
     startRequest();
-    refresh(g);
+    UI.refresh(g);
     applyPendingPick();
   });
 }
@@ -552,7 +552,7 @@ function finish(val){
   P=null;
   clearTargets(); setPrompt('—'); setBtns(false,false,false);
   applyCardStates();
-  refresh(G);
+  UI.refresh(G);
   renderActions();
   r(val);
 }

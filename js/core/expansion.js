@@ -284,7 +284,21 @@ EX.aiPlay=function(g,p){
    }
  }
  const fire=p.hand.find(c=>c.name==='火攻');if(fire&&p.hand.length>=3){const targets=g.legalTargets(p,fire).filter(enemy);if(targets.length)return {type:'use',card:fire,targets:[targets[0]]};}
- // 必须过一遍合法目标：铁索连环是黑色锦囊，帷幕角色不能被指定
- const chain=p.hand.find(c=>c.name==='铁索连环');if(chain){const ts=g.legalTargets(p,chain).filter(q=>friend(q)&&q.marks.linked||enemy(q)&&!q.marks.linked).slice(0,2);if(ts.length)return {type:'use',card:chain,targets:ts};return useSkill('recast');}
+ // 优先连敌、解己方连锁；开局只认出一个敌人时，可用未知阵营补足第二目标。
+ // 仍须检查合法性（如帷幕），不能为凑人数连上已知队友或解开敌人的连锁。
+ const chain=p.hand.find(c=>c.name==='铁索连环');
+ if(chain){
+   const legal=g.legalTargets(p,chain),max=g.targetMax(p,chain);
+   const score=q=>q.marks.linked?AI.attitude(g,p,q):-AI.attitude(g,p,q);
+   const ts=legal.filter(q=>q.marks.linked?(q===p||friend(q)):enemy(q))
+     .sort((a,b)=>score(b)-score(a)).slice(0,max);
+   if(ts.some(q=>enemy(q)&&!q.marks.linked)&&ts.length<max){
+     const uncertain=legal.filter(q=>q!==p&&!q.marks.linked&&!ts.includes(q)&&!friend(q)&&!enemy(q))
+       .sort((a,b)=>score(b)-score(a));
+     ts.push(...uncertain.slice(0,max-ts.length));
+   }
+   if(ts.length)return {type:'use',card:chain,targets:ts};
+   return useSkill('recast');
+ }
  return null;
 };

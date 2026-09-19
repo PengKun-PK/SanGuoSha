@@ -320,8 +320,11 @@
 .equip-chip .eq-name{font-size:12px;line-height:1.35}
 .seat .equip-empty,#selfGeneral .equip-empty{font-size:11px;color:#adb8bf99;border-style:dashed;background:#0e192080}
 .equip-chip.usable{outline-offset:2px}.equip-chip.sel{border-color:#ffdb8c!important;background:#624d23!important}
-.judge-chips{min-width:0;flex-wrap:nowrap;gap:3px;overflow-x:auto;scrollbar-width:thin}
-.judge-chip{flex:none;white-space:nowrap;font-size:12px;padding:2px 4px}
+/* Always reserve the judgement row, so adding/removing delayed tricks cannot
+   change the portrait size calculated by layoutSeats(). */
+.judge-chips{min-width:0;flex:none;height:28px;min-height:28px;align-items:flex-start;flex-wrap:nowrap;gap:3px;overflow-x:auto;scrollbar-width:none}
+.judge-chips::-webkit-scrollbar{display:none}
+.judge-chip{flex:none;white-space:nowrap;font-size:12px;line-height:18px;padding:2px 4px}
 #controlPanel{width:min(620px,calc(100% - 2 * var(--seat-width,176px) - 40px));min-width:330px;border-radius:10px;padding:10px 16px;background:linear-gradient(120deg,#101a22b8,#10182066);border:1px solid #bda26933;box-shadow:0 4px 20px #0003}
 #selfGeneral .gc-skills,.seat .s-skills{top:29px;max-height:calc(var(--seat-width,176px) - 58px)}
 #selfGeneral .gc-sk,.seat .s-sk{font-size:clamp(13px,calc(var(--seat-width,176px) * .105),17px);line-height:1.2;padding:1px 3px;flex-shrink:0}

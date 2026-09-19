@@ -2,6 +2,47 @@ const {test}=require('node:test');
 const assert=require('node:assert/strict');
 const {engine}=require('./harness.cjs');
 
+test('AI chains two targets with one known enemy and an unknown second target',async()=>{
+ const a=engine(),g=a.game(['caocao','zhangfei','zhaoyun','guanyu','sunquan']);
+ const [lord,p,unknown]=g.players;g.curPlayer=p;
+ const chain=a.makeCard('铁索连环','club',12);p.hand=[chain];
+ const act=await a.AI.playTurn(g,p);
+ assert.equal(act.card,chain);assert.deepEqual(Array.from(act.targets),[lord,unknown]);
+ assert.ok(g.validPlay(p,act));await g.useCard(p,act.card,act.targets);
+ assert.equal(lord.marks.linked,true);assert.equal(unknown.marks.linked,true);
+ assert.equal(p.marks.linked,undefined);
+});
+
+test('AI prioritizes two known enemies over unknown seats',async()=>{
+ const a=engine(),g=a.game(),[p,unknown,enemy1,enemy2]=g.players;
+ p.ai.suspect[enemy1.seat]=100;p.ai.suspect[enemy2.seat]=80;
+ p.hand=[a.makeCard('铁索连环','club',12)];
+ const act=await a.AI.playTurn(g,p);
+ assert.deepEqual(Array.from(act.targets),[enemy1,enemy2]);
+ assert.ok(!act.targets.includes(unknown));assert.ok(g.validPlay(p,act));
+});
+
+test('AI chain can unlink itself while linking an enemy and does not chain known friends',async()=>{
+ const a=engine(),g=a.game(['caocao','zhangfei','zhaoyun']),[lord,p,friend]=g.players;
+ g.curPlayer=p;p.ai.suspect[friend.seat]=100;p.marks.linked=true;
+ p.hand=[a.makeCard('铁索连环','club',12)];
+ let act=await a.AI.playTurn(g,p);
+ assert.equal(act.targets.length,2);assert.ok(act.targets.includes(p));assert.ok(act.targets.includes(lord));
+ assert.ok(g.validPlay(p,act));await g.useCard(p,act.card,act.targets);
+ assert.equal(p.marks.linked,false);assert.equal(lord.marks.linked,true);
+ lord.marks.linked=false;p.hand=[a.makeCard('铁索连环','club',12)];
+ act=await a.AI.playTurn(g,p);assert.deepEqual(Array.from(act.targets),[lord]);
+});
+
+test('AI chain respects Weimu and recasts when no beneficial target exists',async()=>{
+ const a=engine(),g=a.game(['caocao','zhangfei','jiaxu','zhaoyun']),[lord,p,blocked,unknown]=g.players;
+ g.curPlayer=p;p.hand=[a.makeCard('铁索连环','club',12)];
+ let act=await a.AI.playTurn(g,p);
+ assert.deepEqual(Array.from(act.targets),[lord,unknown]);assert.ok(!act.targets.includes(blocked));
+ lord.marks.linked=true;act=await a.AI.playTurn(g,p);
+ assert.equal(act.type,'skill');assert.equal(act.skill,'recast');
+});
+
 test('119 generals; all expansion generals have executable skill registrations',()=>{const a=engine();assert.equal(Object.keys(a.GENERALS).length,119);for(const pack of ['风','火','林','山'])assert.equal(Object.values(a.GENERALS).filter(x=>x.pack===pack).length,8);for(const gen of Object.values(a.GENERALS))for(const id of gen.skills){assert.ok(a.SKILLS[id],id);assert.ok(a.SKILL_TEXT[id]?.[1],id);assert.ok(a.SKILLS[id].run||a.SKILLS[id].passive||a.SKILLS[id].event==='_viewas',id);}});
 
 test('160-card deck includes a complete 52-card military expansion',()=>{

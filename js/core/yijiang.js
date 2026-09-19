@@ -53,8 +53,8 @@ Game.prototype.runPhase=async function(p,ph){if(p.flags.endTurn)return;if(ph==='
 const yjDamage=Game.prototype.damage;
 Game.prototype.damage=async function(c){
  if(!c.target.alive||this.over)return;c.n??=1;
- // 绝情优先于一切伤害时机，不产生伤害事件或连环传导。
- if(c.source?.hasSkill('jueqing')){c.applied=false;await this.loseHp(c.target,c.n);return;}
+ // 绝情不产生伤害事件或连环传导，但保留来源用于濒死、击杀归属和身份奖惩。
+ if(c.source?.hasSkill('jueqing')){c.applied=false;await this.loseHp(c.target,c.n,c.source);return;}
  if(c.target.marks.fog!==undefined&&c.nature!=='thunder'){c.cancelled=true;return;}
  if(c.target.marks.gale!==undefined&&c.nature==='fire')c.n++;
  await this.trigger('damageCaused',c);if(c.cancelled||c.n<=0)return;

@@ -4,7 +4,56 @@ const {engine}=require('./harness.cjs');
 function fixture(id){const a=engine(),g=a.game([id,'zhaoyun','guanyu','sunquan','zhangfei']);const [p,t,u]=g.players;for(const q of g.players){q.hand=[];q.skills=[];q.hp=q.maxHp=8;}p.skills=a.GENERALS[id].skills.slice();p.maxHp=a.GENERALS[id].hp;p.hp=p.maxHp;g.checkWin=()=>false;g._yjInit=true;g.askSkill=async()=>false;return {a,g,p,t,u,card:(name='杀',suit='club',num=7)=>a.makeCard(name,suit,num)};}
 function choices(g,{targets=[],cards=[],choose,confirm=false,pick}={}){g.ask=async(p,r)=>{if(r.kind==='chooseTarget')return targets.filter(t=>!r.filter||r.filter(t)).slice(0,r.max||1);if(r.kind==='select')return {cards:cards.filter(c=>(r.area==='any'?p.hand.concat(p.equipList()):p.hand).includes(c)&&(!r.cardFilter||r.cardFilter(c))).slice(0,r.max||1)};if(r.kind==='pickArea')return r.target.allCards()[0];if(r.kind==='pickFrom')return pick?pick(r.cards):r.cards[0];if(r.kind==='choose')return choose||r.options[0];if(r.kind==='confirm')return confirm;return null;};}
 async function skill(f,id,c={},event){await f.a.SKILLS[id].run(f.g,f.p,c,event);}
+test('忍戒 counts damage points and actual discard-phase cards, but not HP loss or other-phase discards',async()=>{
+ const {g,p,t,card}=fixture('shensimayi');
+ await g.damage({source:t,target:p,n:2});
+ assert.equal(p.marks.bear,2);
+ await g.loseHp(p,1);
+ assert.equal(p.marks.bear,2);
+ p.hand=[card()];await g.discardCards(p,p.hand.slice());
+ assert.equal(p.marks.bear,2);
+ g.curPlayer=t;g.phase='discard';p.hand=[card()];await g.discardCards(p,p.hand.slice());
+ assert.equal(p.marks.bear,2);
+ p.hp=3;p.hand=Array.from({length:6},()=>card());g.curPlayer=p;
+ g.ask=async(w,r)=>r.kind==='discard'?w.hand.slice(0,r.n):null;
+ await g.runPhase(p,'discard');
+ assert.equal(p.hand.length,3);assert.equal(p.marks.bear,5);
+ g.phase='start';await g.runPhase(p,'start');
+ assert.ok(p.hasSkill('jilve'));assert.equal(p.marks.bear,5);
+});
+
 test('five requested packs have exactly eleven names; gods have original HP and all skills registered',()=>{const a=engine();for(let y=2011;y<=2015;y++)assert.equal(Object.values(a.GENERALS).filter(g=>g.pack===`一将成名 ${y}`).length,11);assert.equal(Object.values(a.GENERALS).filter(g=>g.k==='god').length,8);assert.equal(a.GENERALS.shenzhaoyun.hp,2);assert.deepEqual(Array.from(a.GENERALS.huaxiong.skills),['shiyong']);});
+test('绝情 fatal slash credits Zhang Chunhua and draws the three-card rebel reward',async()=>{
+ const {g,p,t,card}=fixture('zhangchunhua');
+ p.identity='zhu';t.identity='fan';t.hp=1;g.askSave=async()=>null;
+ const slash=card();p.hand=[slash];
+ await g.useCard(p,slash,[t]);
+ assert.equal(t.alive,false);assert.equal(p.hand.length,3);
+ assert.equal(p.flags.turnKills,1);assert.equal(p.flags.phaseKill,true);
+ assert.ok(g.logs.some(s=>s.includes('击杀反贼，摸三张牌')));
+});
+
+test('绝情 fatal HP loss also applies the lord killing loyalist penalty',async()=>{
+ const {g,p,t,card}=fixture('zhangchunhua');
+ p.identity='zhu';t.identity='zhong';t.hp=1;g.askSave=async()=>null;
+ p.hand=[card()];p.equips.weapon=card('青釭剑');
+ const judge=card('乐不思蜀');p.judges=[judge];
+ await g.damage({source:p,target:t,n:1});
+ assert.equal(t.alive,false);assert.equal(p.hand.length,0);assert.equal(p.equipList().length,0);
+ assert.equal(p.judges[0],judge);
+});
+
+test('unattributed HP loss grants no kill reward, and saving a jueqing victim grants none either',async()=>{
+ const {g,p,t}=fixture('zhangchunhua');t.identity='fan';t.hp=1;g.askSave=async()=>null;
+ await g.loseHp(t,1);
+ assert.equal(t.alive,false);assert.equal(p.hand.length,0);assert.equal(p.flags.turnKills,undefined);
+ const f=fixture('zhangchunhua');f.t.hp=1;f.g.askSave=async()=>null;
+ const trigger=f.g.trigger.bind(f.g);
+ f.g.trigger=async(event,c)=>{if(event==='dying')await f.g.recover(c.player,1);return trigger(event,c);};
+ await f.g.damage({source:f.p,target:f.t,n:1});
+ assert.equal(f.t.alive,true);assert.equal(f.t.hp,1);assert.equal(f.p.hand.length,0);assert.equal(f.p.flags.turnKills,undefined);
+});
+
 test('绝情 bypasses armor, damage triggers, elemental chain and nightmare; 伤逝 responds to HP loss',async()=>{const f=fixture('zhangchunhua'),{g,p,t,u,a,card}=f;t.skills=['wuhun'];t.marks.linked=u.marks.linked=true;t.equips.armor=card('白银狮子');await g.damage({source:p,target:t,n:3,nature:'fire'});assert.equal(t.hp,5);assert.equal(u.hp,8);assert.equal(p.marks.nightmare,undefined);p.hp=3;g.askSkill=async(q,id)=>id==='shangshi';await g.loseHp(p,2);assert.equal(p.hand.length,2);});
 test('落英 collects only other players discarded clubs; 酒诗 flips and can rescue itself',async()=>{const f=fixture('caozhi'),{g,p,t,card,a}=f;choices(g,{confirm:true});g.askSkill=async(q,id)=>id==='luoying';const c=card(),h=card('闪','heart');t.hand=[c,h];await g.discardCards(t,[c,h]);assert.ok(p.hand.includes(c));assert.ok(g.discard.includes(h));p.marks.turned=false;p.hp=0;assert.ok(a.Skills.saveOptions(g,p,p).some(o=>o.id==='jiushi'));const wine=await a.Skills.resolveAsk(g,p,'jiushi','酒');await g.useCard(p,wine,[p],{rescue:true});assert.equal(p.hp,1);assert.equal(p.marks.turned,true);});
 test('毅重 prevents black slash without armor and not red slash',async()=>{const f=fixture('yujin'),{a,g,p,t,card}=f;await a.CardEffect['杀'](g,{user:t,target:p,card:card(),opt:{}});assert.equal(p.hp,4);await a.CardEffect['杀'](g,{user:t,target:p,card:card('杀','heart'),opt:{}});assert.equal(p.hp,3);});

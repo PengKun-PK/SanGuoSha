@@ -330,13 +330,13 @@ class Game {
     if(t.hp<=0 && t.alive) await this.enterDying(t, ctx.source);
   }
 
-  async loseHp(p, n){
+  async loseHp(p, n, source=null){
     p.hp -= n;
     this.log(`${this.nm(p)} 失去 ${n} 点体力（剩余 ${Math.max(0,p.hp)}）。`);
     FX.loseHp(UI.elOf(p), n);
     UI.refresh(this);
     await U.wait(400);
-    if(p.hp<=0 && p.alive) await this.enterDying(p, null);
+    if(p.hp<=0 && p.alive) await this.enterDying(p, source);
   }
 
   async recover(p, n){
