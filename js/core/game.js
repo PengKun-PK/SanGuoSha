@@ -207,7 +207,8 @@ class Game {
     this.toDiscard(cards);
     this.log(`${this.nm(p)} 弃置了 ${cards.map(c=>this.cn(c)).join('、')}${reason?'（'+reason+'）':''}。`);
     for(const c of cards) FX.flyCard(c, UI.elOf(p), U.$('discardPile'), {dur:380});
-    await U.wait(260);
+    /* 在中央亮一下，否则只看得见手牌变少，不知道弃的是哪几张 */
+    await FX.discardFlash(cards, {label:`${p.name} 弃置${reason?' · '+reason:''}`});
     UI.refresh(this);
     await this.checkHandLoss(p);
   }

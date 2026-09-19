@@ -144,6 +144,28 @@ function flyCard(cardObj, fromEl, toEl, opt={}){
   return U.hardWait(dur*0.62);
 }
 
+/* ---- 弃牌展示 ----
+   弃掉的牌只是飞向角落的弃牌堆，太小太快，根本看不清弃了什么；
+   所以在中央把它们摆开亮一下，再淡出飘走。 */
+function discardFlash(cards, opt={}){
+  const list = (cards||[]).filter(Boolean);
+  if(!list.length) return Promise.resolve();
+  const shown = list.slice(0,6);          /* 一次弃很多牌时中间只摆得下这些 */
+  const w = U.el('div','discard-flash');
+  if(opt.label){ const cap=U.el('div','df-label'); cap.textContent=opt.label; w.appendChild(cap); }
+  const row = U.el('div','df-row');
+  shown.forEach((c,i)=>{ const e=UI.cardEl(c,'mini'); e.style.setProperty('--i',i); row.appendChild(e); });
+  if(list.length>shown.length) row.appendChild(U.el('div','df-more','+'+(list.length-shown.length)));
+  w.appendChild(row);
+  const hold = (240+shown.length*60+380)*U.speed, out = 380*U.speed;
+  w.style.animationDelay = hold+'ms';
+  w.style.animationDuration = out+'ms';
+  layer().appendChild(w);
+  setTimeout(()=>w.remove(), hold+out+60);
+  /* 只挡住前半段，淡出留给后面的结算同时进行 */
+  return U.hardWait(hold*0.72);
+}
+
 /* ---- 摸牌动画 ---- */
 async function drawTo(toEl, n){
   const from = U.$('deckPile');
@@ -246,5 +268,5 @@ function dying(on){
 function aoe(){ screenFx('fx-aoe',820); }
 
 return {banner,turnBanner,phaseBanner,damage,heal,loseHp,slash,dodge,beam,flyCard,drawTo,
-        judge,judgeReveal,judgeSwap,judgeClear,death,revealIdentity,dying,aoe,screenFx};
+        judge,judgeReveal,judgeSwap,judgeClear,discardFlash,death,revealIdentity,dying,aoe,screenFx};
 })();

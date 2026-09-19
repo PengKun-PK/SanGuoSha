@@ -143,6 +143,26 @@
 .judge-result.good{color:#5fe07f;text-shadow:0 0 14px rgba(70,230,120,.8),0 2px 6px #000}
 .judge-result.bad{color:#ff6a52;text-shadow:0 0 14px rgba(255,80,60,.8),0 2px 6px #000}
 
+/* ---------- 弃牌展示 ---------- */
+.discard-flash{position:fixed;left:50%;top:38%;z-index:620;transform:translate(-50%,-50%);
+  pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:9px;
+  animation:discardFlashOut .38s ease-in forwards}
+@keyframes discardFlashOut{
+  to{opacity:0;transform:translate(-50%,calc(-50% + 38px)) scale(.84)}
+}
+.df-label{font-size:14px;letter-spacing:.2em;color:#ffcb92;white-space:nowrap;
+  text-shadow:0 2px 6px #000,0 0 12px #000}
+.df-row{display:flex;gap:10px;align-items:center;justify-content:center}
+/* 跟出牌展示一样放大到能看清牌名的尺寸 */
+.df-row .card.mini{width:90px;height:132px;--badge-num:13px;--badge-suit:10.5px;--badge-w:19px}
+.df-row .cf-banner{font-size:17px!important}
+.df-row .card{box-shadow:0 10px 26px #000a,0 0 0 1px #ffd79a40;
+  animation:discardPop .32s cubic-bezier(.2,1.3,.4,1) backwards;animation-delay:calc(var(--i,0)*60ms)}
+@keyframes discardPop{
+  from{opacity:0;transform:translateY(-16px) scale(.7) rotate(-7deg)}
+}
+.df-more{font-size:15px;letter-spacing:.06em;color:#ffcb92;text-shadow:0 2px 6px #000}
+
 /* ---------- 全屏效果 ---------- */
 .screen-fx{position:absolute;inset:0;pointer-events:none}
 .fx-fire{background:radial-gradient(ellipse at 50% 60%,rgba(255,130,30,.42),transparent 62%);
